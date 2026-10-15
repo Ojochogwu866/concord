@@ -19,7 +19,7 @@ def static_render(monkeypatch: pytest.MonkeyPatch) -> None:
     def render(path: str) -> str:
         return ACCESSIBLE_HTML.replace('lang="en"', f'lang="{path.split("/")[1]}"')
 
-    monkeypatch.setattr("audits.runner.render_page_html", render)
+    monkeypatch.setattr("audits.scan.render_page_html", render)
 
 
 def open_findings(code: str = MISSING_TRANSLATION) -> list[Finding]:
@@ -77,7 +77,7 @@ def test_failed_page_is_recorded_and_keeps_its_findings(
             raise PageRenderError("Rendering returned HTTP 500.")
         return ACCESSIBLE_HTML
 
-    monkeypatch.setattr("audits.runner.render_page_html", render)
+    monkeypatch.setattr("audits.scan.render_page_html", render)
     run = run_page_audit()
 
     assert run.status == AuditRun.Status.PARTIAL
@@ -94,7 +94,7 @@ def test_run_fails_when_no_page_renders(
     def render(path: str) -> str:
         raise PageRenderError("Rendering returned HTTP 503.")
 
-    monkeypatch.setattr("audits.runner.render_page_html", render)
+    monkeypatch.setattr("audits.scan.render_page_html", render)
 
     assert run_page_audit().status == AuditRun.Status.FAILED
     with pytest.raises(CommandError, match="No page could be rendered"):
@@ -109,7 +109,7 @@ def test_unexpected_error_marks_run_failed_and_propagates(
     def render(path: str) -> str:
         raise RuntimeError("database went away")
 
-    monkeypatch.setattr("audits.runner.render_page_html", render)
+    monkeypatch.setattr("audits.scan.render_page_html", render)
 
     with pytest.raises(RuntimeError):
         run_page_audit()

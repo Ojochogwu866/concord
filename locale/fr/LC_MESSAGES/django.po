@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sitehealth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 14:25+0000\n"
+"POT-Creation-Date: 2026-10-15 16:23+0000\n"
 "PO-Revision-Date: 2026-10-15 12:45+0000\n"
 "Last-Translator: Dickson Ojochogwu\n"
 "Language-Team: French\n"
@@ -17,71 +17,98 @@ msgstr ""
 msgid "Page inspection"
 msgstr "Inspection des pages"
 
-#: audits/models.py:12
+#: audits/models.py:10
+msgid "Link check"
+msgstr "Vérification des liens"
+
+#: audits/models.py:13
 msgid "Running"
 msgstr "En cours"
 
-#: audits/models.py:13
+#: audits/models.py:14
 msgid "Succeeded"
 msgstr "Réussie"
 
-#: audits/models.py:14
+#: audits/models.py:15
 msgid "Partly failed"
 msgstr "Partiellement échouée"
 
-#: audits/models.py:15
+#: audits/models.py:16
 msgid "Failed"
 msgstr "Échouée"
 
-#: audits/models.py:37
+#: audits/models.py:38
 msgid "Error"
 msgstr "Erreur"
 
-#: audits/models.py:38
+#: audits/models.py:39
 msgid "Warning"
 msgstr "Avertissement"
 
-#: audits/models.py:44
+#: audits/models.py:45
 msgid "first found by run"
 msgstr "passage qui l’a détecté"
 
-#: audits/models.py:51
+#: audits/models.py:52 audits/models.py:99
 msgid "page"
 msgstr "page"
 
-#: audits/models.py:58
+#: audits/models.py:59
 msgid "language"
 msgstr "langue"
 
-#: audits/models.py:60
+#: audits/models.py:61
 msgid "finding"
 msgstr "constat"
 
-#: audits/models.py:62
+#: audits/models.py:63
 msgid "severity"
 msgstr "gravité"
 
-#: audits/models.py:64
+#: audits/models.py:65
 msgid "message"
 msgstr "message"
 
-#: audits/models.py:65
+#: audits/models.py:66
 msgid "address"
 msgstr "adresse"
 
-#: audits/models.py:67
+#: audits/models.py:68
 msgid "first seen"
 msgstr "détecté pour la première fois"
 
-#: audits/models.py:68
+#: audits/models.py:69
 msgid "last seen"
 msgstr "vu pour la dernière fois"
 
-#: audits/models.py:70
+#: audits/models.py:71
 msgid "resolved"
 msgstr "résolu"
 
-#: audits/templates/audits/components/finding_list.html:4 audits/views.py:134
+#: audits/models.py:94
+msgid "link"
+msgstr "lien"
+
+#: audits/models.py:102
+msgid "status code"
+msgstr "code de statut"
+
+#: audits/models.py:104
+#| msgid "Error"
+msgid "error"
+msgstr "erreur"
+
+#: audits/models.py:105
+#| msgid "Link failed three checks in a row."
+msgid "failures in a row"
+msgstr "échecs consécutifs"
+
+#: audits/models.py:106
+#| msgid "last seen"
+msgid "last checked"
+msgstr "dernière vérification"
+
+#: audits/templates/audits/components/finding_list.html:4 audits/views.py:136
 msgid "Severity"
 msgstr "Gravité"
 
@@ -90,8 +117,8 @@ msgid "Page and finding"
 msgstr "Page et constat"
 
 #: audits/templates/audits/components/finding_list.html:6
-#: audits/templates/audits/components/finding_list.html:17 audits/views.py:55
-#: audits/views.py:139
+#: audits/templates/audits/components/finding_list.html:17 audits/views.py:57
+#: audits/views.py:141
 #: sitehealth/templates/components/language_switcher.html:3
 msgid "Language"
 msgstr "Langue"
@@ -105,7 +132,7 @@ msgstr "Détecté le"
 msgid "Last run"
 msgstr "Dernier passage"
 
-#: audits/templates/audits/components/run_summary.html:10 audits/views.py:154
+#: audits/templates/audits/components/run_summary.html:10 audits/views.py:156
 msgid "Pages inspected"
 msgstr "Pages inspectées"
 
@@ -117,11 +144,11 @@ msgstr "Constats ouverts"
 msgid "Edit this page"
 msgstr "Modifier cette page"
 
-#: audits/views.py:38 audits/views.py:140 audits/views.py:153
+#: audits/views.py:38 audits/views.py:142 audits/views.py:155
 msgid "Status"
 msgstr "État"
 
-#: audits/views.py:39 audits/views.py:140
+#: audits/views.py:39 audits/views.py:142
 msgid "Open"
 msgstr "Ouvert"
 
@@ -129,7 +156,7 @@ msgstr "Ouvert"
 msgid "Resolved"
 msgstr "Résolu"
 
-#: audits/views.py:41 audits/views.py:52 audits/views.py:57
+#: audits/views.py:41 audits/views.py:54 audits/views.py:59
 msgid "All"
 msgstr "Tous"
 
@@ -149,39 +176,47 @@ msgstr "Accessibilité"
 msgid "Redirects"
 msgstr "Redirections"
 
-#: audits/views.py:111
+#: audits/views.py:49
+msgid "SEO"
+msgstr "Référencement"
+
+#: audits/views.py:50
+msgid "Links"
+msgstr "Liens"
+
+#: audits/views.py:113
 msgid "Findings"
 msgstr "Constats"
 
-#: audits/views.py:130
+#: audits/views.py:132
 msgid "Finding"
 msgstr "Constat"
 
-#: audits/views.py:138
+#: audits/views.py:140
 msgid "Page"
 msgstr "Page"
 
-#: audits/views.py:141
+#: audits/views.py:143
 msgid "Last seen"
 msgstr "Vu pour la dernière fois"
 
-#: audits/views.py:148
+#: audits/views.py:150
 msgid "Runs"
 msgstr "Passages"
 
-#: audits/views.py:152
+#: audits/views.py:154
 msgid "Run"
 msgstr "Passage"
 
-#: audits/views.py:155
+#: audits/views.py:157
 msgid "Pages failed"
 msgstr "Pages en échec"
 
-#: audits/views.py:156
+#: audits/views.py:158
 msgid "Finished"
 msgstr "Terminé"
 
-#: audits/views.py:162
+#: audits/views.py:164
 msgid "Site health"
 msgstr "Santé du site"
 
@@ -447,7 +482,7 @@ msgstr ""
 "Le serveur a rencontré une erreur et n’a pas pu afficher cette page. "
 "Réessayez dans quelques minutes ou repartez de la page d’accueil."
 
-#: sitehealth/templates/base.html:22
+#: sitehealth/templates/base.html:23
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
 
@@ -456,7 +491,6 @@ msgid "home page"
 msgstr "page d’accueil"
 
 #: sitehealth/templates/components/site_footer.html:9
-#| msgid "Designed and built by Dickson Ojochogwu."
 msgid "Designed and built by"
 msgstr "Conçu et développé par"
 
@@ -465,7 +499,6 @@ msgid "DD on GitHub"
 msgstr "DD sur GitHub"
 
 #: sitehealth/templates/components/site_footer.html:11
-#| msgid "Designed and built by Dickson Ojochogwu."
 msgid "Designed and built by DD"
 msgstr "Conçu et développé par DD"
 
@@ -477,7 +510,6 @@ msgstr[0] "Inspecté le %(date)s · %(counter)s constat ouvert"
 msgstr[1] "Inspecté le %(date)s · %(counter)s constats ouverts"
 
 #: sitehealth/templates/components/site_footer.html:19
-#| msgid "No inspection has run yet."
 msgid "Not inspected yet"
 msgstr "Pas encore inspecté"
 

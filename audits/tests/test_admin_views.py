@@ -144,6 +144,7 @@ def test_filters_by_status_category_and_language(
     }
     assert listed_codes(admin_client, status="resolved") == {"redirect.loop"}
     assert listed_codes(admin_client, category="a11y.") == {"a11y.img_alt"}
+    assert listed_codes(admin_client, category="redirect.") == {"redirect.loop"}
     assert listed_codes(admin_client, locale="fr") == {"i18n.missing_translation"}
 
 

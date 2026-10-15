@@ -46,6 +46,8 @@ class FindingFilterSet(WagtailFilterSet):
             ("i18n.", _("Translation")),
             ("a11y.", _("Accessibility")),
             ("redirect.", _("Redirects")),
+            ("seo.", _("SEO")),
+            ("link.", _("Links")),
         ],
         field_name="code",
         lookup_expr="startswith",

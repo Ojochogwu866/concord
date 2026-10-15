@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 class AuditRun(models.Model):
     class Kind(models.TextChoices):
         PAGES = "pages", _("Page inspection")
+        LINKS = "links", _("Link check")
 
     class Status(models.TextChoices):
         RUNNING = "running", _("Running")
@@ -87,3 +88,30 @@ class Finding(models.Model):
     @property
     def is_open(self) -> bool:
         return self.resolved_at is None
+
+
+class LinkCheck(models.Model):
+    url = models.URLField(_("link"), max_length=2000)
+    source_page = models.ForeignKey(
+        "wagtailcore.Page",
+        on_delete=models.CASCADE,
+        related_name="+",
+        verbose_name=_("page"),
+    )
+    status_code = models.PositiveSmallIntegerField(
+        _("status code"), null=True, blank=True
+    )
+    error = models.CharField(_("error"), max_length=255, blank=True)
+    failure_count = models.PositiveSmallIntegerField(_("failures in a row"), default=0)
+    last_checked_at = models.DateTimeField(_("last checked"), db_index=True)
+
+    class Meta:
+        ordering = ["-failure_count", "url"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["url", "source_page"], name="audits_unique_link_per_page"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return self.url
