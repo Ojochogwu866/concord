@@ -2,17 +2,19 @@
 {% wagtail_site as current_site %}
 {% brief_index_page as brief_index %}
 <header class="site-header page-container flex min-h-20 flex-wrap items-center justify-between gap-x-8 gap-y-2 py-3">
-  <a class="wordmark" href="{% if current_site %}{{ current_site.root_page.url }}{% else %}/{% endif %}">
+  {% localized_home_url as home_url %}
+  <a class="wordmark" href="{{ home_url }}">
     <span class="wordmark-dot" aria-hidden="true"></span>{% firstof current_site.site_name "Site Health" %}
   </a>
   <nav aria-label="{% translate 'Main' %}">
     <ul class="flex items-center gap-x-7" role="list">
       {% if current_site %}
-        <li class="max-sm:hidden"><a class="nav-link" href="{{ current_site.root_page.url }}#inspection-log">{% translate "Inspection log" %}</a></li>
+        <li class="max-sm:hidden"><a class="nav-link" href="{{ home_url }}#inspection-log">{% translate "Inspection log" %}</a></li>
       {% endif %}
       {% if brief_index %}
         <li><a class="nav-link" href="{% pageurl brief_index %}"{% if page and page.pk == brief_index.pk %} aria-current="page"{% endif %}>{{ brief_index.title }}</a></li>
       {% endif %}
+      <li>{% include "components/language_switcher.html" %}</li>
     </ul>
   </nav>
 </header>

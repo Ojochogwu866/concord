@@ -77,7 +77,7 @@ def test_latest_briefs_shows_newest_three_with_h3_titles(
 
     assert "Brief from month 1" not in html
     assert html.index("Brief from month 4") < html.index("Brief from month 2")
-    assert len(re.findall(r'<h3[^>]*>\s*<a [^>]*href="/briefs/', html)) == 3
+    assert len(re.findall(r'<h3[^>]*>\s*<a [^>]*href="/en/briefs/', html)) == 3
     assert "All briefs" in html
 
 
@@ -91,7 +91,7 @@ def test_latest_briefs_shows_empty_state(
 
 def test_latest_for_locale_excludes_other_locales(make_brief: BriefFactory) -> None:
     brief = make_brief()
-    french = Locale.objects.create(language_code="fr")
+    french = Locale.objects.get(language_code="fr")
 
     assert list(BriefPage.latest_for_locale(brief.locale_id)) == [brief]
     assert list(BriefPage.latest_for_locale(french.pk)) == []

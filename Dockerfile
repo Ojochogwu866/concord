@@ -12,7 +12,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PATH="/opt/venv/bin:$PATH"
-RUN python -m venv /opt/venv \
+RUN apt-get update \
+ && apt-get install --yes --no-install-recommends gettext \
+ && rm -rf /var/lib/apt/lists/* \
+ && python -m venv /opt/venv \
  && useradd --create-home --uid 1000 wagtail
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
@@ -36,11 +39,11 @@ COPY --chown=wagtail:wagtail . .
 COPY --from=assets --chown=wagtail:wagtail /app/sitehealth/static/css/main.css sitehealth/static/css/main.css
 COPY --from=assets --chown=wagtail:wagtail /app/sitehealth/static/fonts sitehealth/static/fonts
 USER wagtail
-RUN SECRET_KEY=collectstatic-only \
-    DATABASE_URL=postgres://collectstatic/unused \
+RUN SECRET_KEY=build-only \
+    DATABASE_URL=postgres://build/unused \
     ALLOWED_HOSTS=localhost \
     CSRF_TRUSTED_ORIGINS=https://localhost \
     WAGTAILADMIN_BASE_URL=https://localhost \
-    python manage.py collectstatic --noinput
+    sh -c "python manage.py compilemessages && python manage.py collectstatic --noinput"
 EXPOSE 8000
 CMD ["gunicorn", "sitehealth.wsgi:application", "--bind", "0.0.0.0:8000", "--access-logfile", "-"]

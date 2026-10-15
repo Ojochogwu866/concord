@@ -1,0 +1,240 @@
+# French translations for Site Health.
+msgid ""
+msgstr ""
+"Project-Id-Version: sitehealth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 12:57+0000\n"
+"PO-Revision-Date: 2026-10-15 12:45+0000\n"
+"Last-Translator: Dickson Ojochogwu\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: briefs/blocks.py:14
+msgid "Section heading"
+msgstr "Titre de section"
+
+#: briefs/blocks.py:14
+msgid "Subheading"
+msgstr "Sous-titre"
+
+#: briefs/models.py:42
+msgid "Shown as a secondary link in the hero."
+msgstr "Affiché comme lien secondaire dans l’en-tête."
+
+#: briefs/models.py:50
+msgid "Hero"
+msgstr "En-tête"
+
+#: briefs/models.py:103
+msgid "One or two sentences shown in brief listings."
+msgstr "Une ou deux phrases affichées dans la liste des notes."
+
+#: briefs/models.py:119
+msgid "Byline"
+msgstr "Signature"
+
+#: briefs/templates/briefs/blocks/inspection_log.html:8
+msgid "Status"
+msgstr "État"
+
+#: briefs/templates/briefs/blocks/inspection_log.html:9
+msgid "No inspection has run yet."
+msgstr "Aucune inspection n’a encore eu lieu."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:11
+msgid ""
+"The first run will list every problem it finds here, with the page, the "
+"language and the date it was first seen."
+msgstr ""
+"Le premier passage listera ici chaque problème trouvé, avec la page, la "
+"langue et la date de première détection."
+
+#: briefs/templates/briefs/blocks/latest_briefs.html:15
+msgid "All briefs"
+msgstr "Toutes les notes"
+
+#: briefs/templates/briefs/blocks/latest_briefs.html:18
+#: briefs/templates/briefs/brief_index_page.html:38
+msgid "No briefs have been published yet."
+msgstr "Aucune note n’a encore été publiée."
+
+#: briefs/templates/briefs/brief_index_page.html:8
+#, python-format
+msgid "%(counter)s brief filed"
+msgid_plural "%(counter)s briefs filed"
+msgstr[0] "%(counter)s note classée"
+msgstr[1] "%(counter)s notes classées"
+
+#: briefs/templates/briefs/brief_index_page.html:32
+#, python-format
+msgid "Nothing filed under “%(topic)s” yet."
+msgstr "Rien n’est encore classé sous « %(topic)s »."
+
+#: briefs/templates/briefs/brief_index_page.html:34
+msgid "Show all briefs"
+msgstr "Afficher toutes les notes"
+
+#: briefs/templates/briefs/brief_index_page.html:39
+msgid "Check back soon."
+msgstr "Revenez bientôt."
+
+#: briefs/templates/briefs/brief_page.html:23
+msgid "Filed under"
+msgstr "Classée sous"
+
+#: briefs/templates/briefs/components/byline.html:5
+#, python-format
+msgid "By %(author)s"
+msgstr "Par %(author)s"
+
+#: briefs/templates/briefs/components/specimen.html:5
+msgid "/briefs/grid-storage/"
+msgstr "/fr/notes/stockage-reseau/"
+
+#: briefs/templates/briefs/components/specimen.html:12
+msgid "Grid storage after the 2025 auctions"
+msgstr "Le stockage sur le réseau après les enchères de 2025"
+
+#: briefs/templates/briefs/components/specimen.html:14
+msgid "1 September 2026 · By Dickson Ojochogwu"
+msgstr "1er septembre 2026 · Par Dickson Ojochogwu"
+
+#: briefs/templates/briefs/components/specimen.html:16
+msgid ""
+"Prices for four-hour storage fell by a third between the two auction rounds,"
+" with"
+msgstr ""
+"Le prix du stockage de quatre heures a baissé d’un tiers entre les deux "
+"enchères, avec"
+
+#: briefs/templates/briefs/components/specimen.html:16
+msgid "full results published"
+msgstr "les résultats complets publiés"
+
+#: briefs/templates/briefs/components/specimen.html:16
+msgid "in March."
+msgstr "en mars."
+
+#: briefs/templates/briefs/components/specimen.html:24
+msgid "Example: one brief, inspected"
+msgstr "Exemple : une note inspectée"
+
+#: briefs/templates/briefs/components/specimen.html:26
+msgid "Exactly one main heading."
+msgstr "Un seul titre principal."
+
+#: briefs/templates/briefs/components/specimen.html:27
+msgid "No French version of this brief yet."
+msgstr "Pas encore de version française de cette note."
+
+#: briefs/templates/briefs/components/specimen.html:28
+msgid "Link failed three checks in a row."
+msgstr "Lien en échec trois fois de suite."
+
+#: briefs/templates/briefs/components/specimen.html:29
+msgid "Image has descriptive alt text."
+msgstr "L’image a un texte alternatif descriptif."
+
+#: briefs/templates/briefs/components/topic_filter.html:2
+msgid "Filter briefs by topic"
+msgstr "Filtrer les notes par thème"
+
+#: briefs/templates/briefs/components/topic_filter.html:5
+msgid "All topics"
+msgstr "Tous les thèmes"
+
+#: briefs/templates/briefs/home_page.html:8
+msgid "Inspection report"
+msgstr "Rapport d’inspection"
+
+#: briefs/templates/briefs/home_page.html:17
+msgid "See what it found"
+msgstr "Voir ce qu’il a trouvé"
+
+#: briefs/templates/briefs/home_page.html:21
+msgid "Read the briefs"
+msgstr "Lire les notes"
+
+#: briefs/templates/briefs/home_page.html:24
+msgid "View the source code"
+msgstr "Voir le code source"
+
+#: sitehealth/templates/404.html:4
+msgid "Page not found"
+msgstr "Page introuvable"
+
+#: sitehealth/templates/404.html:8
+msgid "Error 404 · Page not found"
+msgstr "Erreur 404 · Page introuvable"
+
+#: sitehealth/templates/404.html:9
+msgid "This page isn't"
+msgstr "Cette page n’est pas"
+
+#: sitehealth/templates/404.html:9
+msgid "here."
+msgstr "ici."
+
+#: sitehealth/templates/404.html:11
+msgid ""
+"It doesn't exist or has moved. Check the address, or start again from the "
+"home page."
+msgstr ""
+"Elle n’existe pas ou a été déplacée. Vérifiez l’adresse ou repartez de la "
+"page d’accueil."
+
+#: sitehealth/templates/404.html:14 sitehealth/templates/500.html:17
+msgid "Go to the home page"
+msgstr "Aller à la page d’accueil"
+
+#: sitehealth/templates/500.html:7
+msgid "Something went wrong"
+msgstr "Une erreur est survenue"
+
+#: sitehealth/templates/500.html:12
+msgid "Error 500 · Server error"
+msgstr "Erreur 500 · Erreur du serveur"
+
+#: sitehealth/templates/500.html:13
+msgid "Something went"
+msgstr "Quelque chose s’est"
+
+#: sitehealth/templates/500.html:13
+msgid "wrong."
+msgstr "mal passé."
+
+#: sitehealth/templates/500.html:15
+msgid ""
+"The server hit an error and couldn't show this page. Try again in a few "
+"minutes, or start again from the home page."
+msgstr ""
+"Le serveur a rencontré une erreur et n’a pas pu afficher cette page. "
+"Réessayez dans quelques minutes ou repartez de la page d’accueil."
+
+#: sitehealth/templates/base.html:22
+msgid "Skip to main content"
+msgstr "Aller au contenu principal"
+
+#: sitehealth/templates/components/language_switcher.html:3
+msgid "Language"
+msgstr "Langue"
+
+#: sitehealth/templates/components/language_switcher.html:8
+msgid "home page"
+msgstr "page d’accueil"
+
+#: sitehealth/templates/components/site_footer.html:6
+msgid "Designed and built by Dickson Ojochogwu."
+msgstr "Conçu et développé par Dickson Ojochogwu."
+
+#: sitehealth/templates/components/site_header.html:9
+msgid "Main"
+msgstr "Principal"
+
+#: sitehealth/templates/components/site_header.html:12
+msgid "Inspection log"
+msgstr "Journal d’inspection"

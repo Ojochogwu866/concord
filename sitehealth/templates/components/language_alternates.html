@@ -1,0 +1,6 @@
+{% for link in language_link_list %}
+  {% if link.has_translation %}
+    <link rel="alternate" hreflang="{{ link.code }}" href="{{ link.absolute_url }}">
+    {% if forloop.first %}<link rel="alternate" hreflang="x-default" href="{{ link.absolute_url }}">{% endif %}
+  {% endif %}
+{% endfor %}

@@ -11,6 +11,7 @@ from wagtail.models import Page, PageQuerySet, TranslatableMixin
 from wagtail.search import index
 
 from briefs.blocks import PARAGRAPH_FEATURES, BriefBodyBlock, HomeBodyBlock
+from briefs.forms import BriefPageForm
 
 SUMMARY_MAX_LENGTH = 300
 LATEST_BRIEFS_COUNT = 3
@@ -125,6 +126,8 @@ class BriefPage(Page):
         index.SearchField("summary"),
         index.SearchField("body"),
     ]
+
+    base_form_class = BriefPageForm
 
     parent_page_types = ["briefs.BriefIndexPage"]
     subpage_types: list[str] = []

@@ -12,6 +12,8 @@ extend-exclude = ["*/migrations/*"]
 select = ["E", "W", "F", "I", "B", "UP", "DJ", "S", "SIM", "RUF"]
 # Django and Wagtail configure models and viewsets through class-level lists.
 ignore = ["RUF012"]
+# French copy uses a typographic apostrophe and a narrow no-break space on purpose.
+allowed-confusables = ["’", " "]
 
 [tool.ruff.lint.per-file-ignores]
 # Settings modules layer on base.py through star imports by design.
@@ -35,6 +37,7 @@ module = [
     "taggit.*",
     "treebeard.*",
     "modelsearch.*",
+    "wagtail_localize.*",
     "dj_database_url.*",
     "whitenoise.*",
 ]

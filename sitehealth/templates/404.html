@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n briefs_tags %}
 
 {% block title %}{% translate "Page not found" %}{% endblock %}
 
@@ -10,6 +10,7 @@
     <p class="lead mt-8">
       {% translate "It doesn't exist or has moved. Check the address, or start again from the home page." %}
     </p>
-    <p class="mt-10"><a class="button-primary" href="/">{% translate "Go to the home page" %}</a></p>
+    {% localized_home_url as home_url %}
+    <p class="mt-10"><a class="button-primary" href="{{ home_url }}">{% translate "Go to the home page" %}</a></p>
   </div>
 {% endblock %}

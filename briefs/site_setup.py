@@ -4,8 +4,14 @@ from dataclasses import dataclass
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from wagtail.models import Locale, Page, Site
+from wagtail_localize.models import Translation, TranslationSource
 
-from briefs.home_content import HOME_BODY, HOME_HEADING, HOME_LEAD
+from briefs.home_content import (
+    FRENCH_TRANSLATIONS,
+    HOME_BODY,
+    HOME_HEADING,
+    HOME_LEAD,
+)
 from briefs.models import BriefIndexPage, HomePage
 
 SITE_NAME = "Site Health"
@@ -15,6 +21,7 @@ HOME_TITLE = "Site Health"
 HOME_SLUG = "home"
 BRIEF_INDEX_TITLE = "Briefs"
 BRIEF_INDEX_SLUG = "briefs"
+SEED_TRANSLATIONS = {"fr": FRENCH_TRANSLATIONS}
 
 
 @dataclass(frozen=True)
@@ -30,6 +37,10 @@ def ensure_site_structure() -> SiteStructure:
     _ensure_home_content(home)
     site = _ensure_default_site(home)
     brief_index = _ensure_brief_index(home)
+    for language_code, strings in SEED_TRANSLATIONS.items():
+        locale, _ = Locale.objects.get_or_create(language_code=language_code)
+        for page in (home, brief_index):
+            _ensure_translation(page, locale, strings)
     return SiteStructure(site=site, home=home, brief_index=brief_index)
 
 
@@ -91,3 +102,20 @@ def _ensure_brief_index(home: HomePage) -> BriefIndexPage:
     home.add_child(instance=brief_index)
     brief_index.save_revision().publish()
     return brief_index
+
+
+def _ensure_translation(page: Page, locale: Locale, strings: dict[str, str]) -> None:
+    if page.has_translation(locale):
+        return
+    source, _ = TranslationSource.get_or_create_from_instance(page)
+    translation, _ = Translation.objects.get_or_create(
+        source=source, target_locale=locale
+    )
+    po_file = translation.export_po()
+    for entry in po_file:
+        entry.msgstr = strings[entry.msgid]
+    translation.import_po(po_file)
+    # wagtail-localize defers publishing to commit, when the queued revision is stale
+    # and would reset the parent's child count, so save a draft and publish it now.
+    translation.save_target(publish=False)
+    translation.get_target_instance().get_latest_revision().publish()

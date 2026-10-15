@@ -1,18 +1,26 @@
 import pytest
+from django.conf import settings
 from django.core.management import call_command
-from wagtail.models import Page, Site
+from wagtail.models import Locale, Page, Site
 
-from briefs.home_content import HOME_HEADING
+from briefs.home_content import (
+    FRENCH_TRANSLATIONS,
+    HOME_HEADING,
+    HOME_LEAD,
+    INSPECTION_LOG_NOTE,
+    LATEST_BRIEFS_NOTE,
+)
 from briefs.models import BriefIndexPage, HomePage
-from briefs.site_setup import ensure_site_structure
+from briefs.site_setup import SiteStructure, ensure_site_structure
 
 
 @pytest.mark.django_db
 def test_replaces_wagtail_placeholder_with_home_page() -> None:
     structure = ensure_site_structure()
 
-    root_children = Page.get_first_root_node().get_children()
-    assert list(root_children.specific()) == [structure.home]
+    root_children = Page.get_first_root_node().get_children().specific()
+    assert structure.home in root_children
+    assert all(isinstance(page, HomePage) for page in root_children)
     assert Site.objects.get(is_default_site=True).root_page_id == structure.home.pk
     assert structure.home.live
     assert structure.brief_index.get_parent().pk == structure.home.pk
@@ -26,8 +34,8 @@ def test_is_idempotent() -> None:
 
     assert second.home.pk == first.home.pk
     assert second.brief_index.pk == first.brief_index.pk
-    assert HomePage.objects.count() == 1
-    assert BriefIndexPage.objects.count() == 1
+    assert HomePage.objects.count() == len(settings.WAGTAIL_CONTENT_LANGUAGES)
+    assert BriefIndexPage.objects.count() == len(settings.WAGTAIL_CONTENT_LANGUAGES)
     assert Site.objects.count() == 1
 
 
@@ -63,5 +71,37 @@ def test_keeps_editor_pages_under_root() -> None:
 def test_command_reports_created_pages(capsys: pytest.CaptureFixture[str]) -> None:
     call_command("bootstrap_site")
 
-    home = HomePage.objects.get()
+    home = HomePage.objects.get(locale=Locale.get_default())
     assert f"home page {home.pk}" in capsys.readouterr().out
+
+
+def test_publishes_french_home_and_index_with_french_copy(
+    site_structure: SiteStructure,
+) -> None:
+    structure = site_structure
+    french = Locale.objects.get(language_code="fr")
+
+    home = structure.home.get_translation(french)
+    brief_index = structure.brief_index.get_translation(french)
+
+    assert home.live and brief_index.live
+    assert home.heading == "Ce site vérifie son propre travail."
+    assert brief_index.title == "Notes"
+    assert brief_index.url == "/fr/notes/"
+    assert brief_index.get_parent().pk == home.pk
+
+
+def test_french_seed_covers_every_translatable_string() -> None:
+    english_strings = {
+        HOME_HEADING,
+        HOME_LEAD,
+        INSPECTION_LOG_NOTE,
+        LATEST_BRIEFS_NOTE,
+        "Site Health",
+        "home",
+        "Inspection log",
+        "Briefs",
+        "briefs",
+    }
+
+    assert english_strings <= FRENCH_TRANSLATIONS.keys()

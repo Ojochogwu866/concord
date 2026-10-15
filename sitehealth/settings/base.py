@@ -6,6 +6,8 @@ BASE_DIR = PROJECT_DIR.parent
 
 INSTALLED_APPS = [
     "briefs",
+    "wagtail_localize",
+    "wagtail_localize.locales",
     "whitenoise.runserver_nostatic",
     "wagtail.sites",
     "wagtail.users",
@@ -30,6 +32,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -73,6 +76,8 @@ MAILERS = {"default": {"BACKEND": "django.core.mail.backends.smtp.EmailBackend"}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LANGUAGE_CODE = "en"
+LANGUAGES = [("en", "English"), ("fr", "Français")]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
@@ -96,6 +101,8 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
 WAGTAIL_SITE_NAME = "Site Health"
+WAGTAIL_I18N_ENABLED = True
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
 WAGTAILADMIN_BASE_URL = os.environ.get("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
 WAGTAILSEARCH_BACKENDS = {"default": {"BACKEND": "wagtail.search.backends.database"}}
 WAGTAILDOCS_EXTENSIONS = ["csv", "docx", "odt", "pdf", "pptx", "rtf", "txt", "xlsx"]

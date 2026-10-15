@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.urls import URLPattern, URLResolver, include, path
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -14,4 +15,4 @@ if settings.DEBUG:
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += [path("", include(wagtail_urls))]
+urlpatterns += i18n_patterns(path("", include(wagtail_urls)))

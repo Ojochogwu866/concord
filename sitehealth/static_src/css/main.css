@@ -144,6 +144,14 @@
     @apply inline-flex min-h-10 items-center font-medium underline-offset-4 hover:underline aria-[current=page]:underline aria-[current=page]:decoration-2;
   }
 
+  .lang-link {
+    @apply inline-flex min-h-9 min-w-9 items-center justify-center font-mono text-label font-medium hover:bg-paper-sunken aria-[current=true]:bg-ink aria-[current=true]:text-paper;
+  }
+
+  .lang-link-fallback {
+    @apply underline decoration-dotted underline-offset-4;
+  }
+
   .pill {
     @apply inline-flex min-h-9 items-center bg-paper-sunken px-3.5 text-sm font-medium transition-colors duration-200 hover:bg-marker aria-[current=page]:bg-ink aria-[current=page]:text-paper;
   }

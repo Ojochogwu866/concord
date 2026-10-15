@@ -1,0 +1,13 @@
+{% load i18n %}
+{% if language_link_list %}
+  <ul class="flex items-center gap-1" role="list" aria-label="{% translate 'Language' %}">
+    {% for link in language_link_list %}
+      <li>
+        <a class="lang-link{% if not link.has_translation %} lang-link-fallback{% endif %}" href="{{ link.url }}" hreflang="{{ link.code }}"{% if link.is_current %} aria-current="true"{% endif %}>
+          <span aria-hidden="true">{{ link.code|upper }}</span>
+          <span class="sr-only"><span lang="{{ link.code }}">{{ link.name }}</span>{% if not link.has_translation %}, {% translate "home page" %}{% endif %}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
