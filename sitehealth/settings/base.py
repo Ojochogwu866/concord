@@ -5,6 +5,7 @@ PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
 
 INSTALLED_APPS = [
+    "briefs",
     "whitenoise.runserver_nostatic",
     "wagtail.sites",
     "wagtail.users",
@@ -109,4 +110,5 @@ LOGGING = {
         "console": {"class": "logging.StreamHandler", "formatter": "standard"},
     },
     "root": {"handlers": ["console"], "level": os.environ.get("LOG_LEVEL", "INFO")},
+    "loggers": {"django_tasks": {"level": "WARNING"}},
 }

@@ -1,0 +1,78 @@
+from dataclasses import dataclass
+
+from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
+from wagtail.models import Locale, Page, Site
+
+from briefs.models import BriefIndexPage, HomePage
+
+SITE_NAME = "Site Health"
+DEFAULT_SITE_HOSTNAME = "localhost"
+DEFAULT_SITE_PORT = 80
+HOME_TITLE = "Site Health"
+HOME_SLUG = "home"
+BRIEF_INDEX_TITLE = "Briefs"
+BRIEF_INDEX_SLUG = "briefs"
+
+
+@dataclass(frozen=True)
+class SiteStructure:
+    site: Site
+    home: HomePage
+    brief_index: BriefIndexPage
+
+
+@transaction.atomic
+def ensure_site_structure() -> SiteStructure:
+    home = _ensure_home_page()
+    site = _ensure_default_site(home)
+    brief_index = _ensure_brief_index(home)
+    return SiteStructure(site=site, home=home, brief_index=brief_index)
+
+
+def _ensure_home_page() -> HomePage:
+    existing: HomePage | None = HomePage.objects.filter(
+        locale=Locale.get_default()
+    ).first()
+    if existing is not None:
+        return existing
+    root = Page.get_first_root_node()
+    _delete_placeholder_pages(root)
+    home = HomePage(title=HOME_TITLE, slug=HOME_SLUG)
+    root.add_child(instance=home)
+    home.save_revision().publish()
+    return home
+
+
+def _delete_placeholder_pages(root: Page) -> None:
+    # Wagtail's install migration creates a plain "Welcome" page with no template.
+    base_page_type = ContentType.objects.get_for_model(Page)
+    for page in root.get_children().filter(content_type=base_page_type):
+        if page.is_leaf():
+            page.delete()
+
+
+def _ensure_default_site(home: HomePage) -> Site:
+    site = Site.objects.filter(is_default_site=True).first()
+    if site is None:
+        return Site.objects.create(
+            hostname=DEFAULT_SITE_HOSTNAME,
+            port=DEFAULT_SITE_PORT,
+            root_page=home,
+            site_name=SITE_NAME,
+            is_default_site=True,
+        )
+    if site.root_page_id != home.pk:
+        site.root_page = home
+        site.save(update_fields=["root_page"])
+    return site
+
+
+def _ensure_brief_index(home: HomePage) -> BriefIndexPage:
+    existing: BriefIndexPage | None = BriefIndexPage.objects.child_of(home).first()
+    if existing is not None:
+        return existing
+    brief_index = BriefIndexPage(title=BRIEF_INDEX_TITLE, slug=BRIEF_INDEX_SLUG)
+    home.add_child(instance=brief_index)
+    brief_index.save_revision().publish()
+    return brief_index

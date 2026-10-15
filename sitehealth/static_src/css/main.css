@@ -42,4 +42,48 @@
   .text-link {
     @apply text-accent underline underline-offset-4 hover:text-accent-strong;
   }
+
+  .chip-link {
+    @apply inline-flex min-h-8 items-center rounded-full border border-line px-3 text-sm text-ink hover:border-accent hover:text-accent aria-[current=page]:border-accent aria-[current=page]:bg-accent aria-[current=page]:text-surface;
+  }
+
+  .rich-text {
+    @apply max-w-prose leading-relaxed;
+
+    & > * + * {
+      @apply mt-5;
+    }
+
+    & h2 {
+      @apply mt-10 text-2xl font-semibold;
+    }
+
+    & h3 {
+      @apply mt-8 text-xl font-semibold;
+    }
+
+    & a {
+      @apply text-accent underline underline-offset-4 hover:text-accent-strong;
+    }
+
+    & ul {
+      @apply list-disc pl-6;
+    }
+
+    & ol {
+      @apply list-decimal pl-6;
+    }
+
+    & blockquote {
+      @apply border-l-4 border-accent pl-4 text-lg italic;
+    }
+
+    & figcaption {
+      @apply mt-2 text-sm text-ink-muted;
+    }
+
+    & img {
+      @apply h-auto w-full rounded;
+    }
+  }
 }

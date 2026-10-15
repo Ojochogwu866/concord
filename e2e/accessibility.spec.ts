@@ -3,7 +3,11 @@ import { expect, test } from "@playwright/test";
 
 const WCAG_22_AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
-const publicPages = [{ name: "not found page", path: "/this-page-does-not-exist/" }];
+const publicPages = [
+  { name: "home page", path: "/" },
+  { name: "briefs index", path: "/briefs/" },
+  { name: "not found page", path: "/this-page-does-not-exist/" },
+];
 
 for (const { name, path } of publicPages) {
   test.describe(name, () => {

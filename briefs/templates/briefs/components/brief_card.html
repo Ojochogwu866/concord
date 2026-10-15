@@ -1,0 +1,8 @@
+{% load wagtailcore_tags %}
+<article class="py-6">
+  <h2 class="text-xl font-semibold">
+    <a class="hover:text-accent hover:underline" href="{% pageurl brief %}">{{ brief.title }}</a>
+  </h2>
+  {% include "briefs/components/byline.html" with brief=brief %}
+  <p class="mt-3 max-w-prose text-ink-muted">{{ brief.summary }}</p>
+</article>
