@@ -1,0 +1,8 @@
+{% load i18n %}
+<td {% if column.classname %}class="{{ column.classname }}"{% endif %}>
+  {% if edit_url %}
+    <a href="{{ edit_url }}" title="{% translate 'Edit this page' %}">{{ value }}</a>
+  {% else %}
+    <code>{{ instance.url }}</code>
+  {% endif %}
+</td>

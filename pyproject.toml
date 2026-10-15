@@ -38,6 +38,7 @@ module = [
     "treebeard.*",
     "modelsearch.*",
     "wagtail_localize.*",
+    "django_filters.*",
     "dj_database_url.*",
     "whitenoise.*",
 ]

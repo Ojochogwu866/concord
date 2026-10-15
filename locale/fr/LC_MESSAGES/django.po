@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sitehealth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 13:46+0000\n"
+"POT-Creation-Date: 2026-10-15 14:11+0000\n"
 "PO-Revision-Date: 2026-10-15 12:45+0000\n"
 "Last-Translator: Dickson Ojochogwu\n"
 "Language-Team: French\n"
@@ -14,7 +14,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: audits/models.py:9
-#| msgid "Inspection log"
 msgid "Page inspection"
 msgstr "Inspection des pages"
 
@@ -42,17 +41,64 @@ msgstr "Erreur"
 msgid "Warning"
 msgstr "Avertissement"
 
-#: audits/templates/audits/components/finding_list.html:4
+#: audits/models.py:44
+msgid "first found by run"
+msgstr "passage qui l’a détecté"
+
+#: audits/models.py:51
+#| msgid "home page"
+msgid "page"
+msgstr "page"
+
+#: audits/models.py:58
+#| msgid "Language"
+msgid "language"
+msgstr "langue"
+
+#: audits/models.py:60
+#| msgid "Finding"
+msgid "finding"
+msgstr "constat"
+
+#: audits/models.py:62
+#| msgid "Severity"
+msgid "severity"
+msgstr "gravité"
+
+#: audits/models.py:64
+msgid "message"
+msgstr "message"
+
+#: audits/models.py:65
+msgid "address"
+msgstr "adresse"
+
+#: audits/models.py:67
+#| msgid "First seen"
+msgid "first seen"
+msgstr "détecté pour la première fois"
+
+#: audits/models.py:68
+#| msgid "Last seen"
+msgid "last seen"
+msgstr "vu pour la dernière fois"
+
+#: audits/models.py:70
+#| msgid "Resolved"
+msgid "resolved"
+msgstr "résolu"
+
+#: audits/templates/audits/components/finding_list.html:4 audits/views.py:134
 msgid "Severity"
 msgstr "Gravité"
 
 #: audits/templates/audits/components/finding_list.html:5
-#| msgid "Page not found"
 msgid "Page and finding"
 msgstr "Page et constat"
 
 #: audits/templates/audits/components/finding_list.html:6
-#: audits/templates/audits/components/finding_list.html:17
+#: audits/templates/audits/components/finding_list.html:17 audits/views.py:55
+#: audits/views.py:139
 #: sitehealth/templates/components/language_switcher.html:3
 msgid "Language"
 msgstr "Langue"
@@ -66,13 +112,85 @@ msgstr "Détecté le"
 msgid "Last run"
 msgstr "Dernier passage"
 
-#: audits/templates/audits/components/run_summary.html:10
+#: audits/templates/audits/components/run_summary.html:10 audits/views.py:154
 msgid "Pages inspected"
 msgstr "Pages inspectées"
 
 #: audits/templates/audits/components/run_summary.html:14
 msgid "Open findings"
 msgstr "Constats ouverts"
+
+#: audits/templates/audits/tables/page_cell.html:4
+msgid "Edit this page"
+msgstr "Modifier cette page"
+
+#: audits/views.py:38 audits/views.py:140 audits/views.py:153
+msgid "Status"
+msgstr "État"
+
+#: audits/views.py:39 audits/views.py:140
+msgid "Open"
+msgstr "Ouvert"
+
+#: audits/views.py:39
+msgid "Resolved"
+msgstr "Résolu"
+
+#: audits/views.py:41 audits/views.py:52 audits/views.py:57
+msgid "All"
+msgstr "Tous"
+
+#: audits/views.py:44
+msgid "Category"
+msgstr "Catégorie"
+
+#: audits/views.py:46
+msgid "Translation"
+msgstr "Traduction"
+
+#: audits/views.py:47
+msgid "Accessibility"
+msgstr "Accessibilité"
+
+#: audits/views.py:48
+msgid "Redirects"
+msgstr "Redirections"
+
+#: audits/views.py:111
+msgid "Findings"
+msgstr "Constats"
+
+#: audits/views.py:130
+msgid "Finding"
+msgstr "Constat"
+
+#: audits/views.py:138
+msgid "Page"
+msgstr "Page"
+
+#: audits/views.py:141
+msgid "Last seen"
+msgstr "Vu pour la dernière fois"
+
+#: audits/views.py:148
+msgid "Runs"
+msgstr "Passages"
+
+#: audits/views.py:152
+msgid "Run"
+msgstr "Passage"
+
+#: audits/views.py:155
+msgid "Pages failed"
+msgstr "Pages en échec"
+
+#: audits/views.py:156
+msgid "Finished"
+msgstr "Terminé"
+
+#: audits/views.py:162
+msgid "Site health"
+msgstr "Santé du site"
 
 #: briefs/blocks.py:14
 msgid "Section heading"

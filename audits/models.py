@@ -37,21 +37,38 @@ class Finding(models.Model):
         ERROR = "error", _("Error")
         WARNING = "warning", _("Warning")
 
-    run = models.ForeignKey(AuditRun, on_delete=models.CASCADE, related_name="findings")
+    run = models.ForeignKey(
+        AuditRun,
+        on_delete=models.CASCADE,
+        related_name="findings",
+        verbose_name=_("first found by run"),
+    )
     page = models.ForeignKey(
-        "wagtailcore.Page", null=True, on_delete=models.SET_NULL, related_name="+"
+        "wagtailcore.Page",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("page"),
     )
     locale = models.ForeignKey(
-        "wagtailcore.Locale", null=True, on_delete=models.SET_NULL, related_name="+"
+        "wagtailcore.Locale",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("language"),
     )
-    code = models.CharField(max_length=64, db_index=True)
-    severity = models.CharField(max_length=8, choices=Severity.choices, db_index=True)
-    message = models.TextField()
-    url = models.URLField(blank=True, max_length=500)
+    code = models.CharField(_("finding"), max_length=64, db_index=True)
+    severity = models.CharField(
+        _("severity"), max_length=8, choices=Severity.choices, db_index=True
+    )
+    message = models.TextField(_("message"))
+    url = models.URLField(_("address"), blank=True, max_length=500)
     fingerprint = models.CharField(max_length=255, blank=True)
-    first_seen_at = models.DateTimeField(default=timezone.now)
-    last_seen_at = models.DateTimeField(default=timezone.now)
-    resolved_at = models.DateTimeField(null=True, blank=True, db_index=True)
+    first_seen_at = models.DateTimeField(_("first seen"), default=timezone.now)
+    last_seen_at = models.DateTimeField(_("last seen"), default=timezone.now)
+    resolved_at = models.DateTimeField(
+        _("resolved"), null=True, blank=True, db_index=True
+    )
 
     class Meta:
         ordering = ["-first_seen_at"]
@@ -65,7 +82,7 @@ class Finding(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.code} on page {self.page_id}"
+        return f"{self.code}: {self.page or self.url}"
 
     @property
     def is_open(self) -> bool:
