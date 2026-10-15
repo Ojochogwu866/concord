@@ -3,4 +3,8 @@
   <time datetime="{{ brief.published_date|date:'Y-m-d' }}">{{ brief.published_date|date:"j F Y" }}</time>
   <span aria-hidden="true">·</span>
   {% blocktranslate with author=brief.author %}By {{ author }}{% endblocktranslate %}
+  {% if brief.reading_time %}
+    <span aria-hidden="true">·</span>
+    {% blocktranslate count minutes=brief.reading_time %}{{ minutes }} min read{% plural %}{{ minutes }} min read{% endblocktranslate %}
+  {% endif %}
 </p>

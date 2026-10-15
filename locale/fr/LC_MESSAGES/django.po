@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sitehealth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 14:11+0000\n"
+"POT-Creation-Date: 2026-10-15 14:15+0000\n"
 "PO-Revision-Date: 2026-10-15 12:45+0000\n"
 "Last-Translator: Dickson Ojochogwu\n"
 "Language-Team: French\n"
@@ -46,22 +46,18 @@ msgid "first found by run"
 msgstr "passage qui l’a détecté"
 
 #: audits/models.py:51
-#| msgid "home page"
 msgid "page"
 msgstr "page"
 
 #: audits/models.py:58
-#| msgid "Language"
 msgid "language"
 msgstr "langue"
 
 #: audits/models.py:60
-#| msgid "Finding"
 msgid "finding"
 msgstr "constat"
 
 #: audits/models.py:62
-#| msgid "Severity"
 msgid "severity"
 msgstr "gravité"
 
@@ -74,17 +70,14 @@ msgid "address"
 msgstr "adresse"
 
 #: audits/models.py:67
-#| msgid "First seen"
 msgid "first seen"
 msgstr "détecté pour la première fois"
 
 #: audits/models.py:68
-#| msgid "Last seen"
 msgid "last seen"
 msgstr "vu pour la dernière fois"
 
 #: audits/models.py:70
-#| msgid "Resolved"
 msgid "resolved"
 msgstr "résolu"
 
@@ -200,19 +193,23 @@ msgstr "Titre de section"
 msgid "Subheading"
 msgstr "Sous-titre"
 
-#: briefs/models.py:42
+#: briefs/models.py:43
 msgid "Shown as a secondary link in the hero."
 msgstr "Affiché comme lien secondaire dans l’en-tête."
 
-#: briefs/models.py:50
+#: briefs/models.py:51
 msgid "Hero"
 msgstr "En-tête"
 
-#: briefs/models.py:103
+#: briefs/models.py:104
 msgid "One or two sentences shown in brief listings."
 msgstr "Une ou deux phrases affichées dans la liste des notes."
 
-#: briefs/models.py:119
+#: briefs/models.py:111
+msgid "reading time in minutes"
+msgstr "temps de lecture en minutes"
+
+#: briefs/models.py:123
 msgid "Byline"
 msgstr "Signature"
 
@@ -318,6 +315,13 @@ msgstr "Classée sous"
 #, python-format
 msgid "By %(author)s"
 msgstr "Par %(author)s"
+
+#: briefs/templates/briefs/components/byline.html:8
+#, python-format
+msgid "%(minutes)s min read"
+msgid_plural "%(minutes)s min read"
+msgstr[0] "%(minutes)s min de lecture"
+msgstr[1] "%(minutes)s min de lecture"
 
 #: briefs/templates/briefs/components/specimen.html:5
 msgid "/briefs/grid-storage/"

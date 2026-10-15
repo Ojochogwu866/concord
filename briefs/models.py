@@ -12,6 +12,7 @@ from wagtail.search import index
 
 from briefs.blocks import PARAGRAPH_FEATURES, BriefBodyBlock, HomeBodyBlock
 from briefs.forms import BriefPageForm
+from briefs.reading_time import estimate_reading_minutes, stream_text
 
 SUMMARY_MAX_LENGTH = 300
 LATEST_BRIEFS_COUNT = 3
@@ -106,6 +107,9 @@ class BriefPage(Page):
     published_date = models.DateField()
     topics = ParentalManyToManyField(Topic, blank=True, related_name="briefs")
     body = StreamField(BriefBodyBlock())
+    reading_time = models.PositiveSmallIntegerField(
+        _("reading time in minutes"), null=True, blank=True, editable=False
+    )
 
     content_panels = [
         *Page.content_panels,
@@ -134,6 +138,9 @@ class BriefPage(Page):
 
     def save(self, *args: Any, **kwargs: Any) -> None:
         self._use_topic_translations()
+        self.reading_time = estimate_reading_minutes(
+            f"{self.summary} {stream_text(self.body.raw_data)}"
+        )
         super().save(*args, **kwargs)
 
     def topics_in_own_language(self) -> list[Topic]:
