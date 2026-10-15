@@ -123,3 +123,4 @@ On the host (I use Coolify), build from the Dockerfile and expose port 8000. The
 - Point a Cloudflare DNS record at the host, proxied, with SSL mode Full (strict).
 
 GitHub Actions runs lint, types, migrations, tests and the accessibility suite on every push and pull request. On `main`, it calls the host's deploy webhook once both pass, if the `DEPLOY_WEBHOOK_URL` and `DEPLOY_TOKEN` secrets are set. Set the `PUBLIC_SITE_URL` variable to run the accessibility suite against the live site every night.
+# concord
