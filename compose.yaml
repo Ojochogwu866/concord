@@ -30,6 +30,23 @@ services:
       db:
         condition: service_healthy
 
+  web-prod:
+    profiles: [prod]
+    build:
+      context: .
+      target: production
+    environment:
+      SECRET_KEY: local-production-check-only
+      DATABASE_URL: postgres://sitehealth:sitehealth@db:5432/sitehealth
+      ALLOWED_HOSTS: localhost
+      CSRF_TRUSTED_ORIGINS: http://localhost:8001
+      WAGTAILADMIN_BASE_URL: http://localhost:8001
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
   assets:
     image: node:24-slim
     working_dir: /app

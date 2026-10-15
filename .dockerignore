@@ -11,3 +11,5 @@ media
 .mypy_cache
 .ruff_cache
 *.pdf
+test-results
+playwright-report
