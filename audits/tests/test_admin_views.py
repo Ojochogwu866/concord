@@ -201,3 +201,15 @@ def test_admin_menu_has_site_health_section(admin_client: Client) -> None:
     html = admin_client.get("/admin/").content.decode()
 
     assert "Site health" in html
+
+
+def test_lists_open_findings_before_resolved_ones(
+    admin_client: Client, run: AuditRun, make_brief: BriefFactory
+) -> None:
+    brief = make_brief()
+    add_finding(run, brief, "redirect.loop", is_resolved=True)
+    add_finding(run, brief, "a11y.img_alt")
+
+    html = admin_client.get(FINDINGS_URL).content.decode()
+
+    assert html.index("a11y.img_alt") < html.index("redirect.loop")

@@ -3,7 +3,7 @@ from typing import Any
 import django_filters
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
-from django.db.models import QuerySet
+from django.db.models import Case, IntegerField, QuerySet, Value, When
 from django.urls import URLPattern, path, reverse
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.filters import LocaleFilter, WagtailFilterSet
@@ -88,7 +88,14 @@ class PageColumn(Column):
 class FindingIndexView(IndexView):
     def get_base_queryset(self) -> QuerySet[Finding]:
         queryset: QuerySet[Finding] = super().get_base_queryset()
-        return queryset.select_related("page", "locale")
+        # PostgreSQL sorts NULL last, so rank open findings to list them first.
+        return queryset.select_related("page", "locale").annotate(
+            open_rank=Case(
+                When(resolved_at__isnull=True, then=Value(0)),
+                default=Value(1),
+                output_field=IntegerField(),
+            )
+        )
 
 
 class ReadOnlyModelViewSet(ModelViewSet):
@@ -114,7 +121,7 @@ class FindingViewSet(ReadOnlyModelViewSet):
     index_view_class = FindingIndexView
     filterset_class = FindingFilterSet
     search_fields = ["code", "message", "url"]
-    ordering = ["resolved_at", "-last_seen_at"]
+    ordering = ["open_rank", "-last_seen_at"]
     inspect_view_fields = [
         "code",
         "severity",
