@@ -16,11 +16,11 @@ from briefs.home_content import (
 from briefs.models import BriefIndexPage, HomePage
 from briefs.translation import ensure_translation
 
-SITE_NAME = "Site Health"
+SITE_NAME = "Concord"
 FALLBACK_HOSTNAME = "localhost"
 HTTP_PORT = 80
 HTTPS_PORT = 443
-HOME_TITLE = "Site Health"
+HOME_TITLE = "Concord"
 HOME_SLUG = "home"
 BRIEF_INDEX_TITLE = "Briefs"
 BRIEF_INDEX_SLUG = "briefs"
@@ -92,11 +92,13 @@ def _ensure_default_site(home: HomePage) -> Site:
             site_name=SITE_NAME,
             is_default_site=True,
         )
-    if (site.root_page_id, site.hostname, site.port) != (home.pk, hostname, port):
+    current = (site.root_page_id, site.hostname, site.port, site.site_name)
+    if current != (home.pk, hostname, port, SITE_NAME):
         site.root_page = home
         site.hostname = hostname
         site.port = port
-        site.save(update_fields=["root_page", "hostname", "port"])
+        site.site_name = SITE_NAME
+        site.save(update_fields=["root_page", "hostname", "port", "site_name"])
     return site
 
 

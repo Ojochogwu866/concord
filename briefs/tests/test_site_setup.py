@@ -98,7 +98,7 @@ def test_french_seed_covers_every_translatable_string() -> None:
         HOME_LEAD,
         INSPECTION_LOG_NOTE,
         LATEST_BRIEFS_NOTE,
-        "Site Health",
+        "Concord",
         "home",
         "Inspection log",
         "Briefs",
@@ -121,3 +121,14 @@ def test_site_address_follows_admin_base_url(settings: Settings) -> None:
 
     site.refresh_from_db()
     assert (site.hostname, site.port) == ("localhost", 8000)
+
+
+@pytest.mark.django_db
+def test_renames_existing_site_to_current_name() -> None:
+    site = ensure_site_structure().site
+    Site.objects.filter(pk=site.pk).update(site_name="Old name")
+
+    ensure_site_structure()
+
+    site.refresh_from_db()
+    assert site.site_name == "Concord"

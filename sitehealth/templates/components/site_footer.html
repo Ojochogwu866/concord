@@ -1,9 +1,23 @@
-{% load i18n wagtailcore_tags %}
+{% load i18n wagtailcore_tags audits_tags briefs_tags %}
 {% wagtail_site as current_site %}
+{% localized_home_url as home_url %}
+{% inspection_status as status %}
 <footer class="page-container flex flex-col gap-2 pt-10 pb-12 text-sm text-pencil sm:flex-row sm:justify-between">
   <p>
-    <span class="font-bold text-ink">{% firstof current_site.site_name "Site Health" %}.</span>
-    {% translate "Designed and built by Dickson Ojochogwu." %}
+    <span class="font-bold text-ink">{% firstof current_site.site_name "Concord" %}.</span>
+    {% if designer_profile_url %}
+      {% translate "Designed and built by" %} <a class="text-link text-ink" href="{{ designer_profile_url }}" rel="me" aria-label="{% translate 'DD on GitHub' %}">DD</a>
+    {% else %}
+      {% translate "Designed and built by DD" %}
+    {% endif %}
   </p>
-  <p>Wagtail · wagtail-localize · PostgreSQL · Tailwind · Docker</p>
+  <p>
+    <a class="hover:underline" href="{{ home_url }}#inspection-log">
+      {% if status.latest_run %}
+        {% blocktranslate count counter=status.open_count with date=status.latest_run.started_at|date:"j F" %}Last inspected {{ date }} · {{ counter }} open finding{% plural %}Last inspected {{ date }} · {{ counter }} open findings{% endblocktranslate %}
+      {% else %}
+        {% translate "Not inspected yet" %}
+      {% endif %}
+    </a>
+  </p>
 </footer>

@@ -39,6 +39,20 @@ class InspectionLog:
         return self.open_count - len(self.entries)
 
 
+@dataclass(frozen=True)
+class InspectionStatus:
+    latest_run: AuditRun | None
+    open_count: int
+
+
+def inspection_status() -> InspectionStatus:
+    latest_run = AuditRun.objects.filter(status__in=COMPLETED_STATUSES).first()
+    open_count = (
+        Finding.objects.filter(resolved_at__isnull=True).count() if latest_run else 0
+    )
+    return InspectionStatus(latest_run=latest_run, open_count=open_count)
+
+
 def inspection_log() -> InspectionLog:
     latest_run = AuditRun.objects.filter(status__in=COMPLETED_STATUSES).first()
     newest_attempt = AuditRun.objects.exclude(status=AuditRun.Status.RUNNING).first()

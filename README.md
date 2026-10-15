@@ -1,4 +1,4 @@
-# Site Health
+# Concord
 
 I built a bilingual (English and French) Wagtail site that audits itself: it inspects every published page for missing translations, broken redirects and accessibility problems, and lists what it finds on the home page and in the Wagtail admin. It is a test build I made to learn the Wagtail stack, not production experience.
 

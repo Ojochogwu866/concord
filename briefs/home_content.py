@@ -35,7 +35,7 @@ HOME_BODY = [
 
 # French typography puts a narrow no-break space (U+202F) before ; : ? and !
 FRENCH_TRANSLATIONS = {
-    "Site Health": "Site Health",
+    "Concord": "Concord",
     "home": "accueil",
     HOME_HEADING: "Ce site vérifie son propre travail.",
     HOME_LEAD: (

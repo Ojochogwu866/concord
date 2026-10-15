@@ -57,6 +57,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "sitehealth.context_processors.site_credits",
             ],
         },
     },
@@ -103,7 +104,8 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 # Wagtail's page editor can exceed Django's default limit of 1000 fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
-WAGTAIL_SITE_NAME = "Site Health"
+WAGTAIL_SITE_NAME = "Concord"
+DESIGNER_PROFILE_URL = ""
 WAGTAIL_I18N_ENABLED = True
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
 WAGTAILADMIN_BASE_URL = os.environ.get("WAGTAILADMIN_BASE_URL", "http://localhost:8000")

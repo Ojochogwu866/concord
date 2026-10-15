@@ -1,9 +1,9 @@
-# French translations for Site Health.
+# French translations for Concord.
 msgid ""
 msgstr ""
 "Project-Id-Version: sitehealth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 14:15+0000\n"
+"POT-Creation-Date: 2026-10-15 14:25+0000\n"
 "PO-Revision-Date: 2026-10-15 12:45+0000\n"
 "Last-Translator: Dickson Ojochogwu\n"
 "Language-Team: French\n"
@@ -455,9 +455,31 @@ msgstr "Aller au contenu principal"
 msgid "home page"
 msgstr "page d’accueil"
 
-#: sitehealth/templates/components/site_footer.html:6
-msgid "Designed and built by Dickson Ojochogwu."
-msgstr "Conçu et développé par Dickson Ojochogwu."
+#: sitehealth/templates/components/site_footer.html:9
+#| msgid "Designed and built by Dickson Ojochogwu."
+msgid "Designed and built by"
+msgstr "Conçu et développé par"
+
+#: sitehealth/templates/components/site_footer.html:9
+msgid "DD on GitHub"
+msgstr "DD sur GitHub"
+
+#: sitehealth/templates/components/site_footer.html:11
+#| msgid "Designed and built by Dickson Ojochogwu."
+msgid "Designed and built by DD"
+msgstr "Conçu et développé par DD"
+
+#: sitehealth/templates/components/site_footer.html:17
+#, python-format
+msgid "Last inspected %(date)s · %(counter)s open finding"
+msgid_plural "Last inspected %(date)s · %(counter)s open findings"
+msgstr[0] "Inspecté le %(date)s · %(counter)s constat ouvert"
+msgstr[1] "Inspecté le %(date)s · %(counter)s constats ouverts"
+
+#: sitehealth/templates/components/site_footer.html:19
+#| msgid "No inspection has run yet."
+msgid "Not inspected yet"
+msgstr "Pas encore inspecté"
 
 #: sitehealth/templates/components/site_header.html:9
 msgid "Main"
