@@ -2,6 +2,7 @@ import pytest
 from django.core.management import call_command
 from wagtail.models import Page, Site
 
+from briefs.home_content import HOME_HEADING
 from briefs.models import BriefIndexPage, HomePage
 from briefs.site_setup import ensure_site_structure
 
@@ -28,6 +29,25 @@ def test_is_idempotent() -> None:
     assert HomePage.objects.count() == 1
     assert BriefIndexPage.objects.count() == 1
     assert Site.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_seeds_landing_content_once() -> None:
+    home = ensure_site_structure().home
+    assert home.heading == HOME_HEADING
+    assert [block.block_type for block in home.body] == [
+        "features",
+        "steps",
+        "latest_briefs",
+        "text",
+    ]
+
+    home.heading = "Edited by an editor"
+    home.save_revision().publish()
+    ensure_site_structure()
+
+    home.refresh_from_db()
+    assert home.heading == "Edited by an editor"
 
 
 @pytest.mark.django_db

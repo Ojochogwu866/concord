@@ -1,0 +1,24 @@
+{% extends "briefs/blocks/section.html" %}
+{% load wagtailimages_tags %}
+
+{% block section_body %}
+  <div class="mt-8 grid gap-10{% if value.image %} lg:grid-cols-2 lg:items-start{% endif %}">
+    <ol class="max-w-prose space-y-8" role="list">
+      {% for step in value.steps %}
+        <li class="flex gap-4">
+          <span class="step-number" aria-hidden="true">{{ forloop.counter }}</span>
+          <div>
+            <h3 class="text-lg font-semibold">{{ step.title }}</h3>
+            <p class="mt-2 text-ink-muted">{{ step.description }}</p>
+            {% if step.code %}<p class="mt-3"><code class="code-label">{{ step.code }}</code></p>{% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+    {% if value.image %}
+      <figure>
+        {% image value.image width-1200 alt=value.image.contextual_alt_text class="h-auto w-full rounded border border-line" %}
+      </figure>
+    {% endif %}
+  </div>
+{% endblock %}

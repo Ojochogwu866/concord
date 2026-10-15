@@ -2,15 +2,24 @@
 {% load i18n wagtailcore_tags %}
 
 {% block content %}
-  <div class="page-container">
-    <h1 class="text-4xl font-semibold tracking-tight">{{ page.title }}</h1>
-    {% if page.intro %}
-      <div class="rich-text mt-6">{{ page.intro|richtext }}</div>
+  <section class="page-container">
+    <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{% firstof page.heading page.title %}</h1>
+    {% if page.lead %}
+      <p class="mt-6 max-w-prose text-lg text-ink-muted">{{ page.lead }}</p>
     {% endif %}
-    {% if brief_index %}
-      <p class="mt-8">
-        <a class="text-link" href="{% pageurl brief_index %}">{% translate "Read the briefs" %}</a>
-      </p>
+    {% if brief_index or page.repository_url %}
+      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+        {% if brief_index %}
+          <a class="button-primary" href="{% pageurl brief_index %}">{% translate "Read the briefs" %}</a>
+        {% endif %}
+        {% if page.repository_url %}
+          <a class="text-link" href="{{ page.repository_url }}">{% translate "View the source code" %}</a>
+        {% endif %}
+      </div>
     {% endif %}
-  </div>
+  </section>
+
+  {% for block in page.body %}
+    {% include_block block %}
+  {% endfor %}
 {% endblock %}

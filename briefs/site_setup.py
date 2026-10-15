@@ -1,9 +1,11 @@
+import json
 from dataclasses import dataclass
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from wagtail.models import Locale, Page, Site
 
+from briefs.home_content import HOME_BODY, HOME_HEADING, HOME_LEAD
 from briefs.models import BriefIndexPage, HomePage
 
 SITE_NAME = "Site Health"
@@ -25,6 +27,7 @@ class SiteStructure:
 @transaction.atomic
 def ensure_site_structure() -> SiteStructure:
     home = _ensure_home_page()
+    _ensure_home_content(home)
     site = _ensure_default_site(home)
     brief_index = _ensure_brief_index(home)
     return SiteStructure(site=site, home=home, brief_index=brief_index)
@@ -38,10 +41,22 @@ def _ensure_home_page() -> HomePage:
         return existing
     root = Page.get_first_root_node()
     _delete_placeholder_pages(root)
-    home = HomePage(title=HOME_TITLE, slug=HOME_SLUG)
+    home = HomePage(title=HOME_TITLE, slug=HOME_SLUG, **_initial_home_content())
     root.add_child(instance=home)
     home.save_revision().publish()
     return home
+
+
+def _ensure_home_content(home: HomePage) -> None:
+    if home.heading:
+        return
+    for field, value in _initial_home_content().items():
+        setattr(home, field, value)
+    home.save_revision().publish()
+
+
+def _initial_home_content() -> dict[str, str]:
+    return {"heading": HOME_HEADING, "lead": HOME_LEAD, "body": json.dumps(HOME_BODY)}
 
 
 def _delete_placeholder_pages(root: Page) -> None:

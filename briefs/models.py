@@ -10,9 +10,10 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page, PageQuerySet, TranslatableMixin
 from wagtail.search import index
 
-from briefs.blocks import PARAGRAPH_FEATURES, BriefBodyBlock
+from briefs.blocks import PARAGRAPH_FEATURES, BriefBodyBlock, HomeBodyBlock
 
 SUMMARY_MAX_LENGTH = 300
+LATEST_BRIEFS_COUNT = 3
 
 
 class Topic(TranslatableMixin, models.Model):
@@ -34,9 +35,21 @@ class Topic(TranslatableMixin, models.Model):
 
 
 class HomePage(Page):
-    intro = RichTextField(blank=True, features=PARAGRAPH_FEATURES)
+    heading = models.CharField(max_length=120, default="")
+    lead = models.TextField(max_length=400, default="")
+    repository_url = models.URLField(
+        blank=True, help_text=_("Shown as a secondary link in the hero.")
+    )
+    body = StreamField(HomeBodyBlock(), blank=True)
 
-    content_panels = [*Page.content_panels, FieldPanel("intro")]
+    content_panels = [
+        *Page.content_panels,
+        MultiFieldPanel(
+            [FieldPanel("heading"), FieldPanel("lead"), FieldPanel("repository_url")],
+            heading=_("Hero"),
+        ),
+        FieldPanel("body"),
+    ]
 
     parent_page_types = ["wagtailcore.Page"]
     subpage_types = ["briefs.BriefIndexPage"]
@@ -122,3 +135,13 @@ class BriefPage(Page):
 
     parent_page_types = ["briefs.BriefIndexPage"]
     subpage_types: list[str] = []
+
+    @classmethod
+    def latest_for_locale(
+        cls, locale_id: int, limit: int = LATEST_BRIEFS_COUNT
+    ) -> PageQuerySet:
+        return (
+            cls.objects.live()
+            .filter(locale_id=locale_id)
+            .order_by("-published_date", "-pk")[:limit]
+        )

@@ -43,6 +43,26 @@
     @apply text-accent underline underline-offset-4 hover:text-accent-strong;
   }
 
+  .button-primary {
+    @apply inline-flex min-h-11 items-center rounded bg-accent px-5 font-medium text-surface hover:bg-accent-strong;
+  }
+
+  .page-section {
+    @apply mt-16 border-t border-line pt-12;
+  }
+
+  .section-heading {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  .code-label {
+    @apply inline-block rounded bg-surface-sunken px-2 py-0.5 font-mono text-sm text-ink;
+  }
+
+  .step-number {
+    @apply flex size-8 shrink-0 items-center justify-center rounded-full border border-accent font-mono text-sm text-accent;
+  }
+
   .chip-link {
     @apply inline-flex min-h-8 items-center rounded-full border border-line px-3 text-sm text-ink hover:border-accent hover:text-accent aria-[current=page]:border-accent aria-[current=page]:bg-accent aria-[current=page]:text-surface;
   }
