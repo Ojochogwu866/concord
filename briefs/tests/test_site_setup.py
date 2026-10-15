@@ -1,6 +1,7 @@
 import pytest
 from django.conf import settings
 from django.core.management import call_command
+from pytest_django.fixtures import Settings
 from wagtail.models import Locale, Page, Site
 
 from briefs.home_content import (
@@ -105,3 +106,18 @@ def test_french_seed_covers_every_translatable_string() -> None:
     }
 
     assert english_strings <= FRENCH_TRANSLATIONS.keys()
+
+
+@pytest.mark.django_db
+def test_site_address_follows_admin_base_url(settings: Settings) -> None:
+    settings.WAGTAILADMIN_BASE_URL = "https://health.example.com"
+    ensure_site_structure()
+
+    site = Site.objects.get(is_default_site=True)
+    assert (site.hostname, site.port) == ("health.example.com", 443)
+
+    settings.WAGTAILADMIN_BASE_URL = "http://localhost:8000"
+    ensure_site_structure()
+
+    site.refresh_from_db()
+    assert (site.hostname, site.port) == ("localhost", 8000)

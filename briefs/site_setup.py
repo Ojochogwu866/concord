@@ -1,6 +1,8 @@
 import json
 from dataclasses import dataclass
+from urllib.parse import urlsplit
 
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from wagtail.models import Locale, Page, Site
@@ -15,8 +17,9 @@ from briefs.models import BriefIndexPage, HomePage
 from briefs.translation import ensure_translation
 
 SITE_NAME = "Site Health"
-DEFAULT_SITE_HOSTNAME = "localhost"
-DEFAULT_SITE_PORT = 80
+FALLBACK_HOSTNAME = "localhost"
+HTTP_PORT = 80
+HTTPS_PORT = 443
 HOME_TITLE = "Site Health"
 HOME_SLUG = "home"
 BRIEF_INDEX_TITLE = "Briefs"
@@ -79,19 +82,28 @@ def _delete_placeholder_pages(root: Page) -> None:
 
 
 def _ensure_default_site(home: HomePage) -> Site:
+    hostname, port = _public_address()
     site = Site.objects.filter(is_default_site=True).first()
     if site is None:
         return Site.objects.create(
-            hostname=DEFAULT_SITE_HOSTNAME,
-            port=DEFAULT_SITE_PORT,
+            hostname=hostname,
+            port=port,
             root_page=home,
             site_name=SITE_NAME,
             is_default_site=True,
         )
-    if site.root_page_id != home.pk:
+    if (site.root_page_id, site.hostname, site.port) != (home.pk, hostname, port):
         site.root_page = home
-        site.save(update_fields=["root_page"])
+        site.hostname = hostname
+        site.port = port
+        site.save(update_fields=["root_page", "hostname", "port"])
     return site
+
+
+def _public_address() -> tuple[str, int]:
+    url = urlsplit(settings.WAGTAILADMIN_BASE_URL)
+    default_port = HTTPS_PORT if url.scheme == "https" else HTTP_PORT
+    return url.hostname or FALLBACK_HOSTNAME, url.port or default_port
 
 
 def _ensure_brief_index(home: HomePage) -> BriefIndexPage:
