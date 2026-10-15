@@ -59,6 +59,7 @@ class Finding(models.Model):
             models.UniqueConstraint(
                 fields=["code", "page", "locale", "fingerprint"],
                 condition=Q(resolved_at__isnull=True),
+                nulls_distinct=False,
                 name="audits_unique_open_finding",
             )
         ]

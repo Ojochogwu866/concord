@@ -10,24 +10,30 @@ from django.utils import timezone
 from wagtail.models import Locale, Page
 
 from audits.models import AuditRun, Finding
-from audits.registry import FindingData, InspectedPage, registered_checks
+from audits.registry import (
+    FindingData,
+    InspectedPage,
+    registered_checks,
+    registered_site_checks,
+)
 from audits.rendering import PageRenderError, render_page_html
 
 logger = logging.getLogger(__name__)
 
-FindingKey = tuple[str, int, int, str]
+FindingKey = tuple[str, int | None, int | None, str]
 
 
 @dataclass(frozen=True)
 class DetectedFinding:
-    page: Page
+    page: Page | None
     page_url: str
-    locale_id: int
+    locale_id: int | None
     data: FindingData
 
     @property
     def key(self) -> FindingKey:
-        return (self.data.code, self.page.pk, self.locale_id, self.data.fingerprint)
+        page_id = self.page.pk if self.page else None
+        return (self.data.code, page_id, self.locale_id, self.data.fingerprint)
 
 
 @dataclass(frozen=True)
@@ -56,7 +62,9 @@ def _complete_run(run: AuditRun) -> AuditRun:
         .select_related("locale")
         .order_by("path")
     )
-    detected, failures = _inspect_pages(run, pages)
+    locale_ids = dict(Locale.objects.values_list("language_code", "pk"))
+    detected, failures = _inspect_pages(run, pages, locale_ids)
+    detected.extend(_run_site_checks(locale_ids))
 
     with transaction.atomic():
         open_by_code = _sync_findings(run, detected, {f.page_id for f in failures})
@@ -73,9 +81,8 @@ def _complete_run(run: AuditRun) -> AuditRun:
 
 
 def _inspect_pages(
-    run: AuditRun, pages: list[Page]
+    run: AuditRun, pages: list[Page], locale_ids: dict[str, int]
 ) -> tuple[list[DetectedFinding], list[PageFailure]]:
-    locale_ids = dict(Locale.objects.values_list("language_code", "pk"))
     translations = _live_pages_by_translation_key(pages)
     detected: list[DetectedFinding] = []
     failures: list[PageFailure] = []
@@ -114,6 +121,21 @@ def _inspect(
         )
         for check in registered_checks()
         for data in check(inspected)
+    ]
+
+
+def _run_site_checks(locale_ids: dict[str, int]) -> list[DetectedFinding]:
+    return [
+        DetectedFinding(
+            page=None,
+            page_url=data.url,
+            locale_id=locale_ids.get(data.language_code)
+            if data.language_code
+            else None,
+            data=data,
+        )
+        for check in registered_site_checks()
+        for data in check()
     ]
 
 

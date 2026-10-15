@@ -72,7 +72,7 @@ def _log_entries(open_findings: QuerySet[Finding]) -> list[LogEntry]:
                 severity=finding.severity,
                 severity_label=finding.get_severity_display(),
                 code=finding.code,
-                page_title=shown.title if shown else "",
+                page_title=shown.title if shown else finding.url,
                 page_url=shown.url if shown else "",
                 language_code=finding.locale.language_code if finding.locale else "",
                 first_seen_at=finding.first_seen_at,

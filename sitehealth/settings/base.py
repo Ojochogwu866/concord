@@ -10,6 +10,7 @@ INSTALLED_APPS = [
     "wagtail_localize",
     "wagtail_localize.locales",
     "whitenoise.runserver_nostatic",
+    "wagtail.contrib.redirects",
     "wagtail.sites",
     "wagtail.users",
     "wagtail.snippets",
@@ -39,6 +40,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
 ROOT_URLCONF = "sitehealth.urls"
