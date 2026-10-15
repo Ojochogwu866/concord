@@ -1,4 +1,4 @@
-<figure>
-  <blockquote><p>{{ value.quote }}</p></blockquote>
-  {% if value.attribution %}<figcaption>{{ value.attribution }}</figcaption>{% endif %}
+<figure class="pull-quote">
+  <blockquote><p><span class="mark">“{{ value.quote }}”</span></p></blockquote>
+  {% if value.attribution %}<figcaption>— {{ value.attribution }}</figcaption>{% endif %}
 </figure>

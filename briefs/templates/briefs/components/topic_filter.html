@@ -1,12 +1,12 @@
 {% load i18n wagtailcore_tags %}
-<nav class="mt-8" aria-label="{% translate 'Filter briefs by topic' %}">
+<nav class="mt-10" aria-label="{% translate 'Filter briefs by topic' %}">
   <ul class="flex flex-wrap gap-2" role="list">
     <li>
-      <a class="chip-link" href="{% pageurl page %}"{% if not selected_topic %} aria-current="page"{% endif %}>{% translate "All topics" %}</a>
+      <a class="pill" href="{% pageurl page %}"{% if not selected_topic %} aria-current="page"{% endif %}>{% translate "All topics" %}</a>
     </li>
     {% for topic in topics %}
       <li>
-        <a class="chip-link" href="{% pageurl page %}?topic={{ topic.slug|urlencode }}"{% if topic == selected_topic %} aria-current="page"{% endif %}>{{ topic.name }}</a>
+        <a class="pill" href="{% pageurl page %}?topic={{ topic.slug|urlencode }}"{% if topic == selected_topic %} aria-current="page"{% endif %}>{{ topic.name }}</a>
       </li>
     {% endfor %}
   </ul>

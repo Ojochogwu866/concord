@@ -1,9 +1,18 @@
-{% load wagtailcore_tags %}
+{% load i18n wagtailcore_tags briefs_tags %}
 {% wagtail_site as current_site %}
-<header class="border-b border-line">
-  <div class="page-container flex items-center justify-between py-4">
-    <a class="text-lg font-semibold text-ink hover:text-accent" href="/">
-      {% firstof current_site.site_name "Site Health" %}
-    </a>
-  </div>
+{% brief_index_page as brief_index %}
+<header class="site-header page-container flex min-h-20 flex-wrap items-center justify-between gap-x-8 gap-y-2 py-3">
+  <a class="wordmark" href="{% if current_site %}{{ current_site.root_page.url }}{% else %}/{% endif %}">
+    <span class="wordmark-dot" aria-hidden="true"></span>{% firstof current_site.site_name "Site Health" %}
+  </a>
+  <nav aria-label="{% translate 'Main' %}">
+    <ul class="flex items-center gap-x-7" role="list">
+      {% if current_site %}
+        <li class="max-sm:hidden"><a class="nav-link" href="{{ current_site.root_page.url }}#inspection-log">{% translate "Inspection log" %}</a></li>
+      {% endif %}
+      {% if brief_index %}
+        <li><a class="nav-link" href="{% pageurl brief_index %}"{% if page and page.pk == brief_index.pk %} aria-current="page"{% endif %}>{{ brief_index.title }}</a></li>
+      {% endif %}
+    </ul>
+  </nav>
 </header>

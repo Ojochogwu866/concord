@@ -36,10 +36,8 @@ def test_seeds_landing_content_once() -> None:
     home = ensure_site_structure().home
     assert home.heading == HOME_HEADING
     assert [block.block_type for block in home.body] == [
-        "features",
-        "steps",
+        "inspection_log",
         "latest_briefs",
-        "text",
     ]
 
     home.heading = "Edited by an editor"

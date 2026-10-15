@@ -54,13 +54,6 @@ class HomePage(Page):
     parent_page_types = ["wagtailcore.Page"]
     subpage_types = ["briefs.BriefIndexPage"]
 
-    def get_context(
-        self, request: HttpRequest, *args: Any, **kwargs: Any
-    ) -> dict[str, Any]:
-        context: dict[str, Any] = super().get_context(request, *args, **kwargs)
-        context["brief_index"] = BriefIndexPage.objects.child_of(self).live().first()
-        return context
-
 
 class BriefIndexPage(Page):
     intro = RichTextField(blank=True, features=PARAGRAPH_FEATURES)

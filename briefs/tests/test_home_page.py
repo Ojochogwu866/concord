@@ -16,14 +16,23 @@ def render_home(client: Client, home: HomePage) -> str:
     return str(response.content.decode())
 
 
-def test_hero_has_single_heading_and_primary_action(
+def test_hero_highlights_last_word_of_single_heading(
     client: Client, site_structure: SiteStructure
 ) -> None:
     html = render_home(client, site_structure.home)
 
     assert len(re.findall(r"<h1\b", html)) == 1
-    assert "A bilingual Wagtail site that audits itself" in html
-    assert f'class="button-primary" href="{site_structure.brief_index.url}"' in html
+    assert 'This site checks its own <span class="mark">work.</span></h1>' in html
+
+
+def test_hero_links_to_log_and_briefs(
+    client: Client, site_structure: SiteStructure
+) -> None:
+    html = render_home(client, site_structure.home)
+
+    assert 'class="button-primary" href="#inspection-log"' in html
+    assert 'id="inspection-log"' in html
+    assert f'class="text-link" href="{site_structure.brief_index.url}"' in html
 
 
 def test_repository_link_only_shows_when_set(
@@ -43,9 +52,16 @@ def test_renders_every_seeded_section(
 ) -> None:
     html = render_home(client, site_structure.home)
 
-    for heading in ("What it checks", "How it works", "Sample briefs", "Built with"):
+    for heading in ("Inspection log", "Briefs"):
         assert f'<h2 class="section-heading">{heading}</h2>' in html
-    assert '<code class="code-label">i18n.*</code>' in html
+
+
+def test_inspection_log_shows_empty_state_before_first_run(
+    client: Client, site_structure: SiteStructure
+) -> None:
+    html = render_home(client, site_structure.home)
+
+    assert "No inspection has run yet." in html
 
 
 def test_latest_briefs_shows_newest_three_with_h3_titles(
@@ -61,7 +77,7 @@ def test_latest_briefs_shows_newest_three_with_h3_titles(
 
     assert "Brief from month 1" not in html
     assert html.index("Brief from month 4") < html.index("Brief from month 2")
-    assert len(re.findall(r'<h3 class="text-xl', html)) == 3
+    assert len(re.findall(r'<h3[^>]*>\s*<a [^>]*href="/briefs/', html)) == 3
     assert "All briefs" in html
 
 

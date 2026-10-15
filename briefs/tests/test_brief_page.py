@@ -60,7 +60,8 @@ def test_renders_byline_summary_and_body(
     assert "Batteries now clear the evening peak." in html
     assert "<h2>What changed</h2>" in html
     assert "<p>Prices fell by a third.</p>" in html
-    assert "<figcaption>Grid operator</figcaption>" in html
+    assert "Storage won." in html
+    assert "<figcaption>— Grid operator</figcaption>" in html
 
 
 def test_links_topics_back_to_filtered_index(

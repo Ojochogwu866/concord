@@ -1,22 +1,34 @@
 {% extends "base.html" %}
-{% load i18n wagtailcore_tags %}
+{% load i18n wagtailcore_tags briefs_tags %}
 
 {% block content %}
-  <section class="page-container">
-    <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{% firstof page.heading page.title %}</h1>
-    {% if page.lead %}
-      <p class="mt-6 max-w-prose text-lg text-ink-muted">{{ page.lead }}</p>
-    {% endif %}
-    {% if brief_index or page.repository_url %}
-      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+  {% brief_index_page as brief_index %}
+  <section class="page-container split-grid lg:items-start">
+    <div class="split-aside" data-reveal>
+      <p class="kicker">{% translate "Inspection report" %}</p>
+      {% with words=page.heading|split_last_word %}
+        <h1 class="display-heading mt-6">{% if words.0 %}{{ words.0 }} {% endif %}<span class="mark">{{ words.1 }}</span></h1>
+      {% endwith %}
+      {% if page.lead %}
+        <p class="lead mt-8">{{ page.lead }}</p>
+      {% endif %}
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+        <a class="button-primary" href="#inspection-log">
+          {% translate "See what it found" %}
+          <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3v10M3 8l5 5 5-5"/></svg>
+        </a>
         {% if brief_index %}
-          <a class="button-primary" href="{% pageurl brief_index %}">{% translate "Read the briefs" %}</a>
+          <a class="text-link" href="{% pageurl brief_index %}">{% translate "Read the briefs" %}</a>
         {% endif %}
         {% if page.repository_url %}
           <a class="text-link" href="{{ page.repository_url }}">{% translate "View the source code" %}</a>
         {% endif %}
       </div>
-    {% endif %}
+    </div>
+
+    <div class="split-main lg:pt-6" data-reveal style="--reveal-order: 2">
+      {% include "briefs/components/specimen.html" %}
+    </div>
   </section>
 
   {% for block in page.body %}

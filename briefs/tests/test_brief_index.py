@@ -71,7 +71,7 @@ def test_shows_empty_state_for_topic_without_briefs(
     response = client.get(brief_index.url, {"topic": "transport"})
 
     html = response.content.decode()
-    assert "No briefs are tagged “Transport” yet." in html
+    assert "Nothing filed under “Transport” yet." in html
     assert "Show all briefs" in html
 
 

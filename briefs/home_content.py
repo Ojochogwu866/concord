@@ -1,105 +1,29 @@
-HOME_HEADING = "A bilingual Wagtail site that audits itself"
+HOME_HEADING = "This site checks its own work."
 
 HOME_LEAD = (
-    "This site scans its own pages for missing translations, broken redirects, "
-    "dead links and accessibility problems, and lists what it finds in the "
-    "Wagtail admin so editors can fix them."
+    "A bilingual Wagtail site that inspects every page it publishes for missing "
+    "translations, broken redirects, dead links and accessibility problems, then "
+    "hands editors a list to fix."
 )
 
 HOME_BODY = [
     {
-        "type": "features",
+        "type": "inspection_log",
         "value": {
-            "heading": "What it checks",
-            "items": [
-                {
-                    "title": "Translations",
-                    "description": (
-                        "Every English page has a French version, and no French "
-                        "page is older than the English page it was translated from."
-                    ),
-                    "code": "i18n.*",
-                },
-                {
-                    "title": "Redirects",
-                    "description": (
-                        "Old URLs still lead somewhere: no redirect chains, no "
-                        "loops, and no redirects to pages that no longer exist."
-                    ),
-                    "code": "redirect.*",
-                },
-                {
-                    "title": "Links",
-                    "description": (
-                        "Every link on every page still resolves. A link is "
-                        "reported only after three failed checks in a row."
-                    ),
-                    "code": "link.*",
-                },
-                {
-                    "title": "SEO and accessibility",
-                    "description": (
-                        "Titles, descriptions, heading order, alt text, language "
-                        "tags and alternate-language links."
-                    ),
-                    "code": "seo.*  a11y.*",
-                },
-            ],
-        },
-    },
-    {
-        "type": "steps",
-        "value": {
-            "heading": "How it works",
-            "steps": [
-                {
-                    "title": "Scan",
-                    "description": (
-                        "A management command renders each live page and runs "
-                        "small, independent checks against it."
-                    ),
-                    "code": "manage.py run_audits",
-                },
-                {
-                    "title": "Record",
-                    "description": (
-                        "Each problem is stored as a finding with a code, a "
-                        "severity and the page it came from. Problems that "
-                        "disappear are marked resolved on the next run."
-                    ),
-                    "code": "",
-                },
-                {
-                    "title": "Review",
-                    "description": (
-                        "Editors see open findings in the Wagtail admin, filtered "
-                        "by code, severity and language."
-                    ),
-                    "code": "",
-                },
-            ],
-            "image": None,
+            "heading": "Inspection log",
+            "note": (
+                "The audit renders each published page and records what it finds. "
+                "Problems that get fixed drop off on the next run."
+            ),
         },
     },
     {
         "type": "latest_briefs",
         "value": {
-            "heading": "Sample briefs",
+            "heading": "Briefs",
             "note": (
-                "These briefs are the content the audits run against. Two are "
-                "translated into French; one is left untranslated on purpose so "
-                "the report always has something to show."
-            ),
-        },
-    },
-    {
-        "type": "text",
-        "value": {
-            "heading": "Built with",
-            "body": (
-                "<p>Wagtail and wagtail-localize on Django, PostgreSQL, Tailwind "
-                "CSS, Docker and GitHub Actions. Every public page is checked "
-                "against WCAG 2.2 AA with Playwright and axe-core.</p>"
+                "The content the inspection runs against. Two are translated into "
+                "French; one is left untranslated on purpose."
             ),
         },
     },

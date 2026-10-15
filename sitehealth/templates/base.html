@@ -11,13 +11,16 @@
   {% if request.in_preview_panel %}
     <base target="_blank">
   {% endif %}
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preload" href="{% static 'fonts/schibsted-grotesk-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <script src="{% static 'js/site.js' %}" defer></script>
 </head>
-<body class="flex min-h-screen flex-col bg-surface font-sans text-ink antialiased">
+<body class="flex min-h-screen flex-col bg-paper font-sans text-ink antialiased">
   <a class="skip-link" href="#main">{% translate "Skip to main content" %}</a>
   {% wagtailuserbar %}
   {% include "components/site_header.html" %}
-  <main id="main" class="flex-1 py-12" tabindex="-1">
+  <main id="main" class="flex-1 pt-10 pb-32 sm:pt-16" tabindex="-1">
     {% block content %}{% endblock %}
   </main>
   {% include "components/site_footer.html" %}

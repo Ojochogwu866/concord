@@ -1,20 +1,20 @@
 {% extends "briefs/blocks/section.html" %}
-{% load i18n wagtailcore_tags %}
+{% load i18n wagtailcore_tags briefs_tags %}
+
+{% block section_attrs %} id="latest-briefs"{% endblock %}
 
 {% block section_body %}
-  {% if value.note %}
-    <p class="mt-4 max-w-prose text-ink-muted">{{ value.note }}</p>
-  {% endif %}
   {% if briefs %}
-    <ul class="mt-8 divide-y divide-line border-y border-line" role="list">
+    <ul class="-mt-5" role="list">
       {% for brief in briefs %}
         <li>{% include "briefs/components/brief_card.html" with heading_tag="h3" %}</li>
       {% endfor %}
     </ul>
+    {% brief_index_page as brief_index %}
     {% if brief_index %}
       <p class="mt-6"><a class="text-link" href="{% pageurl brief_index %}">{% translate "All briefs" %}</a></p>
     {% endif %}
   {% else %}
-    <p class="mt-8 max-w-prose">{% translate "No briefs have been published yet." %}</p>
+    <p class="bg-paper-sunken px-6 py-10 sm:px-10">{% translate "No briefs have been published yet." %}</p>
   {% endif %}
 {% endblock %}

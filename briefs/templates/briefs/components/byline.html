@@ -1,6 +1,6 @@
 {% load i18n %}
-<p class="mt-2 text-sm text-ink-muted">
-  {% blocktranslate with author=brief.author %}By {{ author }}{% endblocktranslate %}
+<p class="kicker">
+  <time datetime="{{ brief.published_date|date:'Y-m-d' }}">{{ brief.published_date|date:"j F Y" }}</time>
   <span aria-hidden="true">·</span>
-  <time datetime="{{ brief.published_date|date:'Y-m-d' }}">{{ brief.published_date|date:"DATE_FORMAT" }}</time>
+  {% blocktranslate with author=brief.author %}By {{ author }}{% endblocktranslate %}
 </p>

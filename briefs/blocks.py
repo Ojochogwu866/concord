@@ -45,33 +45,13 @@ class BriefBodyBlock(blocks.StreamBlock):
     quote = QuoteBlock()
 
 
-class ItemBlock(blocks.StructBlock):
-    title = blocks.CharBlock(max_length=80)
-    description = blocks.TextBlock(max_length=300)
-    code = blocks.CharBlock(
-        required=False,
-        max_length=60,
-        help_text=_("Optional label shown in monospace, such as a finding code."),
-    )
-
-
-class FeatureListBlock(blocks.StructBlock):
+class InspectionLogBlock(blocks.StructBlock):
     heading = blocks.CharBlock(max_length=120)
-    items = blocks.ListBlock(ItemBlock(), min_num=1)
+    note = blocks.TextBlock(required=False, max_length=300)
 
     class Meta:
         icon = "list-ul"
-        template = "briefs/blocks/feature_list.html"
-
-
-class StepListBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(max_length=120)
-    steps = blocks.ListBlock(ItemBlock(), min_num=1)
-    image = ImageBlock(required=False)
-
-    class Meta:
-        icon = "list-ol"
-        template = "briefs/blocks/step_list.html"
+        template = "briefs/blocks/inspection_log.html"
 
 
 class LatestBriefsBlock(blocks.StructBlock):
@@ -104,7 +84,6 @@ class TextSectionBlock(blocks.StructBlock):
 
 
 class HomeBodyBlock(blocks.StreamBlock):
-    features = FeatureListBlock()
-    steps = StepListBlock()
+    inspection_log = InspectionLogBlock()
     latest_briefs = LatestBriefsBlock()
     text = TextSectionBlock()

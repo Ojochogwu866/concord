@@ -3,28 +3,42 @@
 
 {% block content %}
   <div class="page-container">
-    <h1 class="text-4xl font-semibold tracking-tight">{{ page.title }}</h1>
-    {% if page.intro %}
-      <div class="rich-text mt-6">{{ page.intro|richtext }}</div>
-    {% endif %}
+    <header class="max-w-4xl" data-reveal>
+      <p class="kicker">
+        {% blocktranslate count counter=briefs|length %}{{ counter }} brief filed{% plural %}{{ counter }} briefs filed{% endblocktranslate %}
+      </p>
+      <h1 class="page-heading mt-5">{{ page.title }}</h1>
+      {% if page.intro %}
+        <div class="rich-text mt-8 text-xl">{{ page.intro|richtext }}</div>
+      {% endif %}
+    </header>
 
     {% if topics %}
-      {% include "briefs/components/topic_filter.html" %}
+      <div data-reveal style="--reveal-order: 1">
+        {% include "briefs/components/topic_filter.html" %}
+      </div>
     {% endif %}
 
-    {% if briefs %}
-      <ul class="mt-10 divide-y divide-line border-y border-line" role="list">
-        {% for brief in briefs %}
-          <li>{% include "briefs/components/brief_card.html" %}</li>
-        {% endfor %}
-      </ul>
-    {% elif selected_topic %}
-      <div class="mt-10 max-w-prose">
-        <p>{% blocktranslate with topic=selected_topic.name %}No briefs are tagged “{{ topic }}” yet.{% endblocktranslate %}</p>
-        <p class="mt-4"><a class="text-link" href="{% pageurl page %}">{% translate "Show all briefs" %}</a></p>
-      </div>
-    {% else %}
-      <p class="mt-10 max-w-prose">{% translate "No briefs have been published yet. Check back soon." %}</p>
-    {% endif %}
+    <div class="mt-14 max-w-4xl" data-reveal style="--reveal-order: 2">
+      {% if briefs %}
+        <ul class="-my-5" role="list">
+          {% for brief in briefs %}
+            <li>{% include "briefs/components/brief_card.html" %}</li>
+          {% endfor %}
+        </ul>
+      {% elif selected_topic %}
+        <div class="bg-paper-sunken px-6 py-10 sm:px-10">
+          <p class="text-xl font-bold tracking-tight">
+            {% blocktranslate with topic=selected_topic.name %}Nothing filed under “{{ topic }}” yet.{% endblocktranslate %}
+          </p>
+          <p class="mt-4"><a class="text-link" href="{% pageurl page %}">{% translate "Show all briefs" %}</a></p>
+        </div>
+      {% else %}
+        <div class="bg-paper-sunken px-6 py-10 sm:px-10">
+          <p class="text-xl font-bold tracking-tight">{% translate "No briefs have been published yet." %}</p>
+          <p class="mt-2 text-pencil">{% translate "Check back soon." %}</p>
+        </div>
+      {% endif %}
+    </div>
   </div>
 {% endblock %}

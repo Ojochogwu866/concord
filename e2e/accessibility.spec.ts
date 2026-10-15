@@ -11,6 +11,9 @@ const publicPages = [
 
 for (const { name, path } of publicPages) {
   test.describe(name, () => {
+    // Axe measures colours as rendered, so entrance animations must be settled first.
+    test.use({ contextOptions: { reducedMotion: "reduce" } });
+
     test.beforeEach(async ({ page }) => {
       await page.goto(path);
     });
@@ -33,3 +36,17 @@ for (const { name, path } of publicPages) {
     });
   });
 }
+
+test.describe("entrance animations", () => {
+  test.use({ contextOptions: { reducedMotion: "no-preference" } });
+
+  test("every section is revealed once scrolled into view", async ({ page }) => {
+    await page.goto("/");
+    const sections = page.locator("[data-reveal]");
+
+    for (const section of await sections.all()) {
+      await section.scrollIntoViewIfNeeded();
+      await expect(section).toHaveClass(/is-revealed/);
+    }
+  });
+});

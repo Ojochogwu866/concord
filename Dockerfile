@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build:css
+RUN npm run build
 
 
 FROM python:3.14-slim-bookworm AS base
@@ -34,6 +34,7 @@ ENV DJANGO_SETTINGS_MODULE=sitehealth.settings.production \
     WEB_CONCURRENCY=3
 COPY --chown=wagtail:wagtail . .
 COPY --from=assets --chown=wagtail:wagtail /app/sitehealth/static/css/main.css sitehealth/static/css/main.css
+COPY --from=assets --chown=wagtail:wagtail /app/sitehealth/static/fonts sitehealth/static/fonts
 USER wagtail
 RUN SECRET_KEY=collectstatic-only \
     DATABASE_URL=postgres://collectstatic/unused \

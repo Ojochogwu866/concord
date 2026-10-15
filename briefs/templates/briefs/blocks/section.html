@@ -1,6 +1,13 @@
-<section class="page-section">
-  <div class="page-container">
-    <h2 class="section-heading">{{ value.heading }}</h2>
-    {% block section_body %}{% endblock %}
+<section{% block section_attrs %}{% endblock %} class="page-container mt-32 scroll-mt-8 sm:mt-40">
+  <div class="split-grid">
+    <div class="split-aside" data-reveal>
+      <h2 class="section-heading">{{ value.heading }}</h2>
+      {% if value.note %}
+        <p class="mt-5 max-w-lead text-pencil">{{ value.note }}</p>
+      {% endif %}
+    </div>
+    <div class="split-main" data-reveal style="--reveal-order: 1">
+      {% block section_body %}{% endblock %}
+    </div>
   </div>
 </section>

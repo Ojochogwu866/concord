@@ -1,6 +1,9 @@
-{% load i18n %}
-<footer class="border-t border-line bg-surface-sunken">
-  <div class="page-container py-6 text-sm text-ink-muted">
-    <p>{% translate "A bilingual Wagtail site that audits its own content." %}</p>
-  </div>
+{% load i18n wagtailcore_tags %}
+{% wagtail_site as current_site %}
+<footer class="page-container flex flex-col gap-2 pt-10 pb-12 text-sm text-pencil sm:flex-row sm:justify-between">
+  <p>
+    <span class="font-bold text-ink">{% firstof current_site.site_name "Site Health" %}.</span>
+    {% translate "Designed and built by Dickson Ojochogwu." %}
+  </p>
+  <p>Wagtail · wagtail-localize · PostgreSQL · Tailwind · Docker</p>
 </footer>
