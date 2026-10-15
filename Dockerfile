@@ -17,7 +17,7 @@ RUN python -m venv /opt/venv \
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 WORKDIR /app
-RUN chown wagtail:wagtail /app
+RUN mkdir media && chown -R wagtail:wagtail /app
 
 
 FROM base AS dev
@@ -35,8 +35,7 @@ ENV DJANGO_SETTINGS_MODULE=sitehealth.settings.production \
 COPY --chown=wagtail:wagtail . .
 COPY --from=assets --chown=wagtail:wagtail /app/sitehealth/static/css/main.css sitehealth/static/css/main.css
 USER wagtail
-RUN mkdir -p media \
- && SECRET_KEY=collectstatic-only \
+RUN SECRET_KEY=collectstatic-only \
     DATABASE_URL=postgres://collectstatic/unused \
     ALLOWED_HOSTS=localhost \
     CSRF_TRUSTED_ORIGINS=https://localhost \
