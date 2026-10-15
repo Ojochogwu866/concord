@@ -16,7 +16,7 @@
         {% endfor %}
       </div>
 
-      {% with topics=page.topics.all %}
+      {% with topics=page.topics_in_own_language %}
         {% if topics %}
           <aside class="lg:col-span-3 lg:col-start-1 lg:row-start-1" aria-labelledby="brief-topics" data-reveal style="--reveal-order: 2">
             <div class="lg:sticky lg:top-8">

@@ -12,6 +12,8 @@ const publicPages = [
   { name: "French home page", path: "/fr/", language: "fr" },
   { name: "French briefs index", path: "/fr/notes/", language: "fr" },
   { name: "French not found page", path: "/fr/page-introuvable/", language: "fr" },
+  { name: "brief page", path: "/en/briefs/what-changed-in-wcag-2-2/", language: "en" },
+  { name: "French brief page", path: "/fr/notes/ce-qui-change-avec-wcag-2-2/", language: "fr" },
 ] as const;
 
 for (const { name, path, language } of publicPages) {

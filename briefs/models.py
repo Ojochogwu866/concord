@@ -132,6 +132,24 @@ class BriefPage(Page):
     parent_page_types = ["briefs.BriefIndexPage"]
     subpage_types: list[str] = []
 
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        self._use_topic_translations()
+        super().save(*args, **kwargs)
+
+    def topics_in_own_language(self) -> list[Topic]:
+        return [
+            topic for topic in self.topics.all() if topic.locale_id == self.locale_id
+        ]
+
+    def _use_topic_translations(self) -> None:
+        # Translating a page copies its topics unchanged, so swap in this locale's ones.
+        topics = list(self.topics.all())
+        if all(topic.locale_id == self.locale_id for topic in topics):
+            return
+        self.topics = [
+            topic.get_translation_or_none(self.locale) or topic for topic in topics
+        ]
+
     @classmethod
     def latest_for_locale(
         cls, locale_id: int, limit: int = LATEST_BRIEFS_COUNT

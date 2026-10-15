@@ -112,3 +112,31 @@ def test_brief_form_only_offers_topics_in_the_brief_language(
     assert isinstance(form, BriefPageForm)
     assert list(form.fields["topics"].queryset) == [english_topic]
     assert french_topic not in form.fields["topics"].queryset
+
+
+def test_translated_brief_switches_to_topics_in_its_own_language(
+    make_brief: BriefFactory, french: Locale
+) -> None:
+    english_topic = Topic.objects.create(name="Energy", slug="energy")
+    french_topic = english_topic.copy_for_translation(french)
+    french_topic.name = "Énergie"
+    french_topic.save()
+    untranslated_topic = Topic.objects.create(name="Housing", slug="housing")
+    brief = make_brief(topics=[english_topic, untranslated_topic])
+
+    translation = translate_brief(brief, french)
+
+    translation.refresh_from_db()
+    assert set(translation.topics.all()) == {french_topic, untranslated_topic}
+
+
+def test_french_brief_page_hides_topics_without_a_french_version(
+    client: Client, make_brief: BriefFactory, french: Locale
+) -> None:
+    untranslated_topic = Topic.objects.create(name="Housing", slug="housing")
+    brief = make_brief(topics=[untranslated_topic])
+    translation = translate_brief(brief, french)
+
+    html = client.get(translation.url).content.decode()
+
+    assert "?topic=housing" not in html
