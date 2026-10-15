@@ -13,3 +13,5 @@ media
 *.pdf
 test-results
 playwright-report
+.env.*
+!.env.example

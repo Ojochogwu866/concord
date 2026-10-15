@@ -22,3 +22,5 @@ test-results/
 playwright-report/
 /sitehealth/static/fonts/
 *.mo
+.env.*
+!.env.example

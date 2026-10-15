@@ -4,6 +4,7 @@ from sitehealth.settings.base import *
 from sitehealth.settings.environment import (
     get_required,
     get_required_list,
+    r2_storage,
 )
 
 DEBUG = False
@@ -20,6 +21,12 @@ DATABASES = {
         conn_health_checks=True,
     )
 }
+# Neon's pooled endpoint runs PgBouncer in transaction mode, which breaks these.
+DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
+media_storage = r2_storage()
+if media_storage is not None:
+    STORAGES["default"] = media_storage
 
 STORAGES["staticfiles"]["BACKEND"] = (
     "whitenoise.storage.CompressedManifestStaticFilesStorage"
