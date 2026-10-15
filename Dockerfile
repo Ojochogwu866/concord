@@ -46,4 +46,6 @@ RUN SECRET_KEY=build-only \
     WAGTAILADMIN_BASE_URL=https://localhost \
     sh -c "python manage.py compilemessages && python manage.py collectstatic --noinput"
 EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD ["python", "-m", "sitehealth.healthcheck"]
 CMD ["gunicorn", "sitehealth.wsgi:application", "--bind", "0.0.0.0:8000", "--access-logfile", "-"]
