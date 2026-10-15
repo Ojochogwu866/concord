@@ -7,7 +7,7 @@ from wagtail.models import Locale
 from briefs.forms import BriefPageForm
 from briefs.models import BriefPage, Topic
 from briefs.site_setup import SiteStructure
-from briefs.tests.conftest import BriefFactory
+from briefs.tests.fixtures import BriefFactory
 
 
 @pytest.fixture

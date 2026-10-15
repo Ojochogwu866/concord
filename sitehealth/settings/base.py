@@ -6,6 +6,7 @@ BASE_DIR = PROJECT_DIR.parent
 
 INSTALLED_APPS = [
     "briefs",
+    "audits",
     "wagtail_localize",
     "wagtail_localize.locales",
     "whitenoise.runserver_nostatic",

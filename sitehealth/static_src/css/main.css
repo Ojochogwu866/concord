@@ -168,6 +168,11 @@
     @apply text-xs font-bold tracking-wider uppercase;
   }
 
+  /* Fixed columns keep severity, code, language and date aligned across rows. */
+  .finding-row {
+    @apply grid gap-1 py-4 sm:grid-cols-[6rem_minmax(0,1fr)_4.5rem_8.5rem] sm:items-baseline sm:gap-6 sm:py-3.5;
+  }
+
   .sweep-title {
     @apply bg-no-repeat;
     box-decoration-break: clone;

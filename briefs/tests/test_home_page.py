@@ -7,7 +7,7 @@ from wagtail.models import Locale
 
 from briefs.models import BriefPage, HomePage
 from briefs.site_setup import SiteStructure
-from briefs.tests.conftest import BriefFactory
+from briefs.tests.fixtures import BriefFactory
 
 
 def render_home(client: Client, home: HomePage) -> str:

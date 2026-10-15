@@ -9,7 +9,7 @@ from wagtail.images.models import Image
 from wagtail.images.tests.utils import get_test_image_file
 
 from briefs.models import Topic
-from briefs.tests.conftest import BriefFactory
+from briefs.tests.fixtures import BriefFactory
 
 
 @pytest.fixture

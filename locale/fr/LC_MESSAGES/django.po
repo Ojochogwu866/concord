@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sitehealth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 12:57+0000\n"
+"POT-Creation-Date: 2026-10-15 13:46+0000\n"
 "PO-Revision-Date: 2026-10-15 12:45+0000\n"
 "Last-Translator: Dickson Ojochogwu\n"
 "Language-Team: French\n"
@@ -12,6 +12,67 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: audits/models.py:9
+#| msgid "Inspection log"
+msgid "Page inspection"
+msgstr "Inspection des pages"
+
+#: audits/models.py:12
+msgid "Running"
+msgstr "En cours"
+
+#: audits/models.py:13
+msgid "Succeeded"
+msgstr "Réussie"
+
+#: audits/models.py:14
+msgid "Partly failed"
+msgstr "Partiellement échouée"
+
+#: audits/models.py:15
+msgid "Failed"
+msgstr "Échouée"
+
+#: audits/models.py:37
+msgid "Error"
+msgstr "Erreur"
+
+#: audits/models.py:38
+msgid "Warning"
+msgstr "Avertissement"
+
+#: audits/templates/audits/components/finding_list.html:4
+msgid "Severity"
+msgstr "Gravité"
+
+#: audits/templates/audits/components/finding_list.html:5
+#| msgid "Page not found"
+msgid "Page and finding"
+msgstr "Page et constat"
+
+#: audits/templates/audits/components/finding_list.html:6
+#: audits/templates/audits/components/finding_list.html:17
+#: sitehealth/templates/components/language_switcher.html:3
+msgid "Language"
+msgstr "Langue"
+
+#: audits/templates/audits/components/finding_list.html:7
+#: audits/templates/audits/components/finding_list.html:18
+msgid "First seen"
+msgstr "Détecté le"
+
+#: audits/templates/audits/components/run_summary.html:4
+msgid "Last run"
+msgstr "Dernier passage"
+
+#: audits/templates/audits/components/run_summary.html:10
+msgid "Pages inspected"
+msgstr "Pages inspectées"
+
+#: audits/templates/audits/components/run_summary.html:14
+msgid "Open findings"
+msgstr "Constats ouverts"
 
 #: briefs/blocks.py:14
 msgid "Section heading"
@@ -37,11 +98,16 @@ msgstr "Une ou deux phrases affichées dans la liste des notes."
 msgid "Byline"
 msgstr "Signature"
 
-#: briefs/templates/briefs/blocks/inspection_log.html:8
-msgid "Status"
-msgstr "État"
+#: briefs/templates/briefs/blocks/inspection_log.html:9
+msgid "The first inspection failed."
+msgstr "La première inspection a échoué."
 
 #: briefs/templates/briefs/blocks/inspection_log.html:9
+msgid "No page could be inspected. The next scheduled run will try again."
+msgstr ""
+"Aucune page n’a pu être inspectée. Le prochain passage planifié réessaiera."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:11
 msgid "No inspection has run yet."
 msgstr "Aucune inspection n’a encore eu lieu."
 
@@ -52,6 +118,50 @@ msgid ""
 msgstr ""
 "Le premier passage listera ici chaque problème trouvé, avec la page, la "
 "langue et la date de première détection."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:17
+#, python-format
+msgid ""
+"The latest run on %(date)s UTC failed. These results are from the last run "
+"that finished."
+msgstr ""
+"Le dernier passage du %(date)s UTC a échoué. Ces résultats proviennent du "
+"dernier passage terminé."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:21
+#, python-format
+msgid ""
+"%(counter)s page couldn’t be inspected on this run, so its findings are "
+"unchanged."
+msgid_plural ""
+"%(counter)s pages couldn’t be inspected on this run, so their findings are "
+"unchanged."
+msgstr[0] ""
+"%(counter)s page n’a pas pu être inspectée lors de ce passage ; ses constats"
+" sont inchangés."
+msgstr[1] ""
+"%(counter)s pages n’ont pas pu être inspectées lors de ce passage ; leurs "
+"constats sont inchangés."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:29
+#, python-format
+msgid "%(counter)s more finding is in the Wagtail admin."
+msgid_plural "%(counter)s more findings are in the Wagtail admin."
+msgstr[0] "%(counter)s autre constat figure dans l’administration Wagtail."
+msgstr[1] ""
+"%(counter)s autres constats figurent dans l’administration Wagtail."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:31
+msgid "Fixed problems drop off on the next run."
+msgstr "Les problèmes corrigés disparaissent au passage suivant."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:34
+msgid "All clear."
+msgstr "Rien à signaler."
+
+#: briefs/templates/briefs/blocks/inspection_log.html:34
+msgid "The last run found no problems on any page."
+msgstr "Le dernier passage n’a trouvé aucun problème."
 
 #: briefs/templates/briefs/blocks/latest_briefs.html:15
 msgid "All briefs"
@@ -218,10 +328,6 @@ msgstr ""
 #: sitehealth/templates/base.html:22
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
-
-#: sitehealth/templates/components/language_switcher.html:3
-msgid "Language"
-msgstr "Langue"
 
 #: sitehealth/templates/components/language_switcher.html:8
 msgid "home page"

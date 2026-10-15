@@ -1,14 +1,37 @@
 {% extends "briefs/blocks/section.html" %}
-{% load i18n %}
+{% load i18n audits_tags %}
 
 {% block section_attrs %} id="inspection-log"{% endblock %}
 
 {% block section_body %}
-  <div class="bg-paper-sunken px-6 py-10 sm:px-10 sm:py-12">
-    <p class="kicker">{% translate "Status" %}</p>
-    <p class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">{% translate "No inspection has run yet." %}</p>
-    <p class="mt-4 max-w-prose text-pencil">
-      {% translate "The first run will list every problem it finds here, with the page, the language and the date it was first seen." %}
-    </p>
-  </div>
+  {% inspection_log as log %}
+  {% if not log.has_run and log.failed_run %}
+    {% include "audits/components/log_notice.html" with title=_("The first inspection failed.") body=_("No page could be inspected. The next scheduled run will try again.") %}
+  {% elif not log.has_run %}
+    {% include "audits/components/log_notice.html" with title=_("No inspection has run yet.") body=_("The first run will list every problem it finds here, with the page, the language and the date it was first seen.") %}
+  {% else %}
+    {% include "audits/components/run_summary.html" with run=log.latest_run open_count=log.open_count %}
+
+    {% if log.failed_run %}
+      <p class="mt-6 max-w-prose text-sm">
+        {% blocktranslate with date=log.failed_run.started_at|date:"j F Y, H:i" %}The latest run on {{ date }} UTC failed. These results are from the last run that finished.{% endblocktranslate %}
+      </p>
+    {% elif log.latest_run.pages_failed %}
+      <p class="mt-6 max-w-prose text-sm">
+        {% blocktranslate count counter=log.latest_run.pages_failed %}{{ counter }} page couldn’t be inspected on this run, so its findings are unchanged.{% plural %}{{ counter }} pages couldn’t be inspected on this run, so their findings are unchanged.{% endblocktranslate %}
+      </p>
+    {% endif %}
+
+    {% if log.entries %}
+      {% include "audits/components/finding_list.html" with entries=log.entries %}
+      <p class="mt-6 text-sm text-pencil">
+        {% if log.hidden_count %}
+          {% blocktranslate count counter=log.hidden_count %}{{ counter }} more finding is in the Wagtail admin.{% plural %}{{ counter }} more findings are in the Wagtail admin.{% endblocktranslate %}
+        {% endif %}
+        {% translate "Fixed problems drop off on the next run." %}
+      </p>
+    {% else %}
+      {% include "audits/components/log_notice.html" with title=_("All clear.") body=_("The last run found no problems on any page.") is_clear=True %}
+    {% endif %}
+  {% endif %}
 {% endblock %}

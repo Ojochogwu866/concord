@@ -7,7 +7,7 @@ from django.test import Client
 from django.test.utils import CaptureQueriesContext
 
 from briefs.models import BriefIndexPage, Topic
-from briefs.tests.conftest import BriefFactory
+from briefs.tests.fixtures import BriefFactory
 
 
 def test_lists_live_briefs_newest_first(

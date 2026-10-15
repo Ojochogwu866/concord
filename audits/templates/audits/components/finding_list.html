@@ -1,0 +1,22 @@
+{% load i18n %}
+<div class="mt-10">
+  <div class="finding-row max-sm:hidden text-sm text-pencil" aria-hidden="true">
+    <span>{% translate "Severity" %}</span>
+    <span>{% translate "Page and finding" %}</span>
+    <span>{% translate "Language" %}</span>
+    <span>{% translate "First seen" %}</span>
+  </div>
+  <ul role="list">
+    {% for entry in entries %}
+      <li class="finding-row">
+        <span><span class="severity-{{ entry.severity }}">{{ entry.severity_label }}</span></span>
+        <span>
+          {% if entry.page_url %}<a class="font-medium hover:underline" href="{{ entry.page_url }}">{{ entry.page_title }}</a>{% else %}<span class="font-medium">{{ entry.page_title }}</span>{% endif %}
+          <code class="code-label mt-1 block text-pencil">{{ entry.code }}</code>
+        </span>
+        <span class="font-mono text-label"><span class="sr-only">{% translate "Language" %}: </span>{{ entry.language_code|upper }}</span>
+        <span class="text-sm text-pencil"><span class="sr-only">{% translate "First seen" %}: </span><time datetime="{{ entry.first_seen_at|date:'c' }}">{{ entry.first_seen_at|date:"j F Y" }}</time></span>
+      </li>
+    {% endfor %}
+  </ul>
+</div>

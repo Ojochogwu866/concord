@@ -1,0 +1,17 @@
+{% load i18n %}
+<dl class="flex flex-wrap gap-x-12 gap-y-6">
+  <div>
+    <dt class="kicker">{% translate "Last run" %}</dt>
+    <dd class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+      <time datetime="{{ run.started_at|date:'c' }}">{{ run.started_at|date:"j F, H:i" }} <span class="text-base font-medium text-pencil">UTC</span></time>
+    </dd>
+  </div>
+  <div>
+    <dt class="kicker">{% translate "Pages inspected" %}</dt>
+    <dd class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{{ run.pages_inspected }}</dd>
+  </div>
+  <div>
+    <dt class="kicker">{% translate "Open findings" %}</dt>
+    <dd class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{% if open_count %}<span class="mark">{{ open_count }}</span>{% else %}0{% endif %}</dd>
+  </div>
+</dl>
