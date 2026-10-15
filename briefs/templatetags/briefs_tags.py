@@ -4,12 +4,15 @@ from django import template
 from django.conf import settings
 from django.http import HttpRequest
 from django.template import Context
+from django.utils.html import strip_tags
 from django.utils.translation import get_language
 from wagtail.models import Page, Site
 
 from briefs.models import BriefIndexPage
 
 register = template.Library()
+
+DESCRIPTION_FALLBACK_FIELDS = ("summary", "lead", "intro")
 
 
 @dataclass(frozen=True)
@@ -26,6 +29,22 @@ class LanguageLink:
 def split_last_word(text: str) -> tuple[str, str]:
     leading, _, last = text.strip().rpartition(" ")
     return leading, last
+
+
+@register.filter
+def meta_description(page: object) -> str:
+    # Templates pass an empty string, not None, when no page is in the context.
+    if not isinstance(page, Page):
+        return ""
+    text = page.search_description or next(
+        (
+            strip_tags(str(getattr(page, field)))
+            for field in DESCRIPTION_FALLBACK_FIELDS
+            if getattr(page, field, "")
+        ),
+        "",
+    )
+    return _shorten(" ".join(text.split()), settings.SEO_DESCRIPTION_MAX_LENGTH)
 
 
 @register.simple_tag(takes_context=True)
@@ -75,6 +94,13 @@ def language_links(context: Context) -> list[LanguageLink]:
             )
         )
     return links
+
+
+def _shorten(text: str, max_length: int) -> str:
+    if len(text) <= max_length:
+        return text
+    cut = text[: max_length - 1].rsplit(" ", 1)[0].rstrip(" ,;:.")
+    return f"{cut}…"
 
 
 def _site_for(context: Context) -> Site | None:

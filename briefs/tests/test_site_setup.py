@@ -132,3 +132,18 @@ def test_renames_existing_site_to_current_name() -> None:
 
     site.refresh_from_db()
     assert site.site_name == "Concord"
+
+
+def test_gives_each_briefs_index_an_intro_once(site_structure: SiteStructure) -> None:
+    english = site_structure.brief_index
+    english.refresh_from_db()
+    french = english.get_translation(Locale.objects.get(language_code="fr"))
+    assert "Short, sourced explainers" in english.intro
+    assert "Des notes courtes" in french.intro
+
+    french.intro = "<p>Edited by an editor.</p>"
+    french.save_revision().publish()
+    ensure_site_structure()
+
+    french.refresh_from_db()
+    assert french.intro == "<p>Edited by an editor.</p>"

@@ -1,3 +1,3 @@
-from audits.checks import accessibility, redirects, translations
+from audits.checks import accessibility, redirects, seo, translations
 
-__all__ = ["accessibility", "redirects", "translations"]
+__all__ = ["accessibility", "redirects", "seo", "translations"]

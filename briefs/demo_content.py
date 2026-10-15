@@ -255,7 +255,7 @@ FRENCH_DEMO_TRANSLATIONS = {
         '<a id="a1">What’s New in WCAG 2.2</a> (en anglais).'
     ),
     "How hreflang tells search engines which language to show": (
-        "Comment hreflang indique aux moteurs de recherche quelle langue afficher"
+        "Comment hreflang indique la langue à afficher"
     ),
     "how-hreflang-works": "comment-fonctionne-hreflang",
     (

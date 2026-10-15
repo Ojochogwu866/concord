@@ -16,6 +16,11 @@ LATEST_BRIEFS_NOTE = (
     "one is left untranslated on purpose."
 )
 
+BRIEF_INDEX_INTRO = (
+    "<p>Short, sourced explainers on accessibility, multilingual publishing "
+    "and keeping a site healthy.</p>"
+)
+
 HOME_BODY = [
     {
         "type": "inspection_log",
@@ -34,6 +39,11 @@ HOME_BODY = [
 ]
 
 # French typography puts a narrow no-break space (U+202F) before ; : ? and !
+FRENCH_BRIEF_INDEX_INTRO = (
+    "<p>Des notes courtes et sourcées sur l’accessibilité, la publication "
+    "multilingue et l’entretien d’un site.</p>"
+)
+
 FRENCH_TRANSLATIONS = {
     "Concord": "Concord",
     "home": "accueil",

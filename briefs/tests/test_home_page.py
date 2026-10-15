@@ -108,3 +108,17 @@ def test_home_without_body_still_renders_hero(
 
     assert "section-heading" not in html
     assert len(re.findall(r"<h1\b", html)) == 1
+
+
+def test_pages_have_description_and_canonical(
+    client: Client, make_brief: BriefFactory
+) -> None:
+    brief = make_brief(summary="A short summary used for search results.")
+
+    html = client.get(brief.url).content.decode()
+
+    assert (
+        '<meta name="description" content="A short summary used for search results.">'
+        in html
+    )
+    assert f'<link rel="canonical" href="{brief.full_url}">' in html

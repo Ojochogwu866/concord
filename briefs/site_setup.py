@@ -8,6 +8,8 @@ from django.db import transaction
 from wagtail.models import Locale, Page, Site
 
 from briefs.home_content import (
+    BRIEF_INDEX_INTRO,
+    FRENCH_BRIEF_INDEX_INTRO,
     FRENCH_TRANSLATIONS,
     HOME_BODY,
     HOME_HEADING,
@@ -25,6 +27,7 @@ HOME_SLUG = "home"
 BRIEF_INDEX_TITLE = "Briefs"
 BRIEF_INDEX_SLUG = "briefs"
 SEED_TRANSLATIONS = {"fr": FRENCH_TRANSLATIONS}
+SEED_INDEX_INTROS = {"en": BRIEF_INDEX_INTRO, "fr": FRENCH_BRIEF_INDEX_INTRO}
 
 
 @dataclass(frozen=True)
@@ -44,6 +47,7 @@ def ensure_site_structure() -> SiteStructure:
         locale, _ = Locale.objects.get_or_create(language_code=language_code)
         for page in (home, brief_index):
             ensure_translation(page, locale, strings)
+    _ensure_index_intros(brief_index)
     return SiteStructure(site=site, home=home, brief_index=brief_index)
 
 
@@ -106,6 +110,18 @@ def _public_address() -> tuple[str, int]:
     url = urlsplit(settings.WAGTAILADMIN_BASE_URL)
     default_port = HTTPS_PORT if url.scheme == "https" else HTTP_PORT
     return url.hostname or FALLBACK_HOSTNAME, url.port or default_port
+
+
+def _ensure_index_intros(brief_index: BriefIndexPage) -> None:
+    # Source language first, so translations are never older than their source.
+    for index in sorted(
+        brief_index.get_translations(inclusive=True).live().specific(),
+        key=lambda page: page.locale_id != brief_index.locale_id,
+    ):
+        intro = SEED_INDEX_INTROS.get(index.locale.language_code)
+        if intro and not index.intro:
+            index.intro = intro
+            index.save_revision().publish()
 
 
 def _ensure_brief_index(home: HomePage) -> BriefIndexPage:
