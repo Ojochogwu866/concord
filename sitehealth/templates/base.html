@@ -1,0 +1,25 @@
+{% load i18n static wagtailcore_tags wagtailuserbar %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% firstof page.seo_title page.title %}{% endblock %}</title>
+  {% if page.search_description %}
+    <meta name="description" content="{{ page.search_description }}">
+  {% endif %}
+  {% if request.in_preview_panel %}
+    <base target="_blank">
+  {% endif %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body class="flex min-h-screen flex-col bg-surface font-sans text-ink antialiased">
+  <a class="skip-link" href="#main">{% translate "Skip to main content" %}</a>
+  {% wagtailuserbar %}
+  {% include "components/site_header.html" %}
+  <main id="main" class="flex-1 py-12" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+  {% include "components/site_footer.html" %}
+</body>
+</html>

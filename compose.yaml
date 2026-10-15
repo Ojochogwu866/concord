@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: sitehealth
+      POSTGRES_USER: sitehealth
+      POSTGRES_PASSWORD: sitehealth
+    ports:
+      - "${POSTGRES_PORT:-5434}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sitehealth -d sitehealth"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      target: dev
+    environment:
+      DATABASE_URL: postgres://sitehealth:sitehealth@db:5432/sitehealth
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - media:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+
+  assets:
+    image: node:24-slim
+    working_dir: /app
+    command: sh -c "npm ci && npm run watch:css"
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  postgres-data:
+  media:

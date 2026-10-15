@@ -1,0 +1,9 @@
+{% load wagtailcore_tags %}
+{% wagtail_site as current_site %}
+<header class="border-b border-line">
+  <div class="page-container flex items-center justify-between py-4">
+    <a class="text-lg font-semibold text-ink hover:text-accent" href="/">
+      {% firstof current_site.site_name "Site Health" %}
+    </a>
+  </div>
+</header>
