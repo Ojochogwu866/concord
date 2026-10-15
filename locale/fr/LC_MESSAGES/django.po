@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sitehealth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 16:23+0000\n"
+"POT-Creation-Date: 2026-10-15 16:46+0000\n"
 "PO-Revision-Date: 2026-10-15 12:45+0000\n"
 "Last-Translator: Dickson Ojochogwu\n"
 "Language-Team: French\n"
@@ -37,7 +37,7 @@ msgstr "Partiellement échouée"
 msgid "Failed"
 msgstr "Échouée"
 
-#: audits/models.py:38
+#: audits/models.py:38 suggestions/views.py:135
 msgid "Error"
 msgstr "Erreur"
 
@@ -57,7 +57,7 @@ msgstr "page"
 msgid "language"
 msgstr "langue"
 
-#: audits/models.py:61
+#: audits/models.py:61 suggestions/models.py:50
 msgid "finding"
 msgstr "constat"
 
@@ -93,18 +93,15 @@ msgstr "lien"
 msgid "status code"
 msgstr "code de statut"
 
-#: audits/models.py:104
-#| msgid "Error"
+#: audits/models.py:104 suggestions/models.py:18
 msgid "error"
 msgstr "erreur"
 
 #: audits/models.py:105
-#| msgid "Link failed three checks in a row."
 msgid "failures in a row"
 msgstr "échecs consécutifs"
 
 #: audits/models.py:106
-#| msgid "last seen"
 msgid "last checked"
 msgstr "dernière vérification"
 
@@ -145,6 +142,7 @@ msgid "Edit this page"
 msgstr "Modifier cette page"
 
 #: audits/views.py:38 audits/views.py:142 audits/views.py:155
+#: suggestions/templates/suggestions/review.html:16 suggestions/views.py:104
 msgid "Status"
 msgstr "État"
 
@@ -164,7 +162,7 @@ msgstr "Tous"
 msgid "Category"
 msgstr "Catégorie"
 
-#: audits/views.py:46
+#: audits/views.py:46 suggestions/models.py:9
 msgid "Translation"
 msgstr "Traduction"
 
@@ -188,11 +186,12 @@ msgstr "Liens"
 msgid "Findings"
 msgstr "Constats"
 
-#: audits/views.py:132
+#: audits/views.py:132 suggestions/templates/suggestions/review.html:6
 msgid "Finding"
 msgstr "Constat"
 
-#: audits/views.py:140
+#: audits/views.py:140 suggestions/templates/suggestions/review.html:9
+#: suggestions/views.py:103
 msgid "Page"
 msgstr "Page"
 
@@ -520,3 +519,166 @@ msgstr "Principal"
 #: sitehealth/templates/components/site_header.html:12
 msgid "Inspection log"
 msgstr "Journal d’inspection"
+
+#: suggestions/models.py:7
+msgid "SEO title"
+msgstr "Titre SEO"
+
+#: suggestions/models.py:8
+msgid "Meta description"
+msgstr "Méta-description"
+
+#: suggestions/models.py:13 suggestions/models.py:52
+msgid "task"
+msgstr "tâche"
+
+#: suggestions/models.py:14
+msgid "provider"
+msgstr "fournisseur"
+
+#: suggestions/models.py:15
+msgid "model"
+msgstr "modèle"
+
+#: suggestions/models.py:16
+msgid "prompt"
+msgstr "requête"
+
+#: suggestions/models.py:17
+msgid "response"
+msgstr "réponse"
+
+#: suggestions/models.py:25
+msgid "requested by"
+msgstr "demandé par"
+
+#: suggestions/models.py:27 suggestions/models.py:67
+msgid "created"
+msgstr "créé"
+
+#: suggestions/models.py:42
+msgid "Pending review"
+msgstr "En attente de relecture"
+
+#: suggestions/models.py:43
+msgid "Approved as a draft"
+msgstr "Approuvé en brouillon"
+
+#: suggestions/models.py:44
+msgid "Rejected"
+msgstr "Rejeté"
+
+#: suggestions/models.py:54
+#| msgid "Status"
+msgid "status"
+msgstr "état"
+
+#: suggestions/models.py:60
+msgid "proposed text"
+msgstr "texte proposé"
+
+#: suggestions/models.py:65
+msgid "model call"
+msgstr "appel au modèle"
+
+#: suggestions/models.py:74
+msgid "reviewed by"
+msgstr "relu par"
+
+#: suggestions/models.py:76
+msgid "reviewed"
+msgstr "relu"
+
+#: suggestions/models.py:77
+msgid "review note"
+msgstr "note de relecture"
+
+#: suggestions/templates/suggestions/review.html:12
+msgid "Current text"
+msgstr "Texte actuel"
+
+#: suggestions/templates/suggestions/review.html:13
+msgid "Empty"
+msgstr "Vide"
+
+#: suggestions/templates/suggestions/review.html:14 suggestions/views.py:98
+msgid "Proposed text"
+msgstr "Texte proposé"
+
+#: suggestions/templates/suggestions/review.html:15
+msgid "characters"
+msgstr "caractères"
+
+#: suggestions/templates/suggestions/review.html:19
+msgid "Review note"
+msgstr "Note de relecture"
+
+#: suggestions/templates/suggestions/review.html:22
+msgid "Drafted by"
+msgstr "Rédigé par"
+
+#: suggestions/templates/suggestions/review.html:27
+msgid ""
+"Approving saves the text into a new draft of the page. Nothing is published "
+"until an editor publishes the page."
+msgstr ""
+"Approuver enregistre le texte dans un nouveau brouillon de la page. Rien "
+"n’est publié tant qu’un éditeur ne publie pas la page."
+
+#: suggestions/templates/suggestions/review.html:30
+msgid "Approve as draft"
+msgstr "Approuver en brouillon"
+
+#: suggestions/templates/suggestions/review.html:34
+msgid "Why reject it? (optional)"
+msgstr "Pourquoi le rejeter ? (facultatif)"
+
+#: suggestions/templates/suggestions/review.html:36
+msgid "Reject"
+msgstr "Rejeter"
+
+#: suggestions/templates/suggestions/review.html:39
+msgid "You need permission to edit this page to review this suggestion."
+msgstr "Vous devez pouvoir modifier cette page pour relire cette suggestion."
+
+#: suggestions/translator.py:16
+msgid "Concord draft translator"
+msgstr "Traducteur brouillon Concord"
+
+#: suggestions/views.py:51
+msgid "Saved as a draft. Review and publish it from the page editor."
+msgstr ""
+"Enregistré en brouillon. Relisez-le et publiez-le depuis l’éditeur de page."
+
+#: suggestions/views.py:57
+#| msgid "Edit this page"
+msgid "Edit page"
+msgstr "Modifier la page"
+
+#: suggestions/views.py:72
+msgid "Suggestion rejected."
+msgstr "Suggestion rejetée."
+
+#: suggestions/views.py:90 suggestions/views.py:142
+msgid "Suggestions"
+msgstr "Suggestions"
+
+#: suggestions/views.py:102
+msgid "Task"
+msgstr "Tâche"
+
+#: suggestions/views.py:105 suggestions/views.py:136
+msgid "Created"
+msgstr "Créé"
+
+#: suggestions/views.py:119
+msgid "Model calls"
+msgstr "Appels au modèle"
+
+#: suggestions/views.py:133
+msgid "Call"
+msgstr "Appel"
+
+#: suggestions/views.py:134
+msgid "Model"
+msgstr "Modèle"

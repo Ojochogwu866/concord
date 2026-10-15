@@ -7,6 +7,7 @@ BASE_DIR = PROJECT_DIR.parent
 INSTALLED_APPS = [
     "briefs",
     "audits",
+    "suggestions",
     "wagtail_localize",
     "wagtail_localize.locales",
     "whitenoise.runserver_nostatic",
@@ -118,6 +119,14 @@ LINK_CHECK_MAX_RETRIES = 1
 LINK_CHECK_RETRY_BACKOFF_SECONDS = 2.0
 LINK_CHECK_HOST_INTERVAL_SECONDS = 1.0
 LINK_CHECK_MAX_BODY_BYTES = 64 * 1024
+
+# AI suggestions stay off unless a provider is configured, so no model is called
+# (or billed) by accident. Dotted path to a class implementing SuggestionProvider.
+SUGGESTIONS_PROVIDER = os.environ.get("SUGGESTIONS_PROVIDER", "")
+SUGGESTIONS_MAX_PER_RUN = 20
+WAGTAILLOCALIZE_MACHINE_TRANSLATOR = {
+    "CLASS": "suggestions.translator.ConcordTranslator"
+}
 WAGTAIL_I18N_ENABLED = True
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
 WAGTAILADMIN_BASE_URL = os.environ.get("WAGTAILADMIN_BASE_URL", "http://localhost:8000")

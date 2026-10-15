@@ -19,3 +19,7 @@ DATABASES = {
 }
 
 MAILERS = {"default": {"BACKEND": "django.core.mail.backends.console.EmailBackend"}}
+
+SUGGESTIONS_PROVIDER = os.environ.get(
+    "SUGGESTIONS_PROVIDER", "suggestions.providers.offline.OfflineProvider"
+)

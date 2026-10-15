@@ -1,0 +1,41 @@
+{% extends "wagtailadmin/generic/inspect.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block main_content %}
+  <dl>
+    <dt>{% translate "Finding" %}</dt>
+    <dd><code>{{ suggestion.finding.code }}</code>: {{ suggestion.finding.message }}</dd>
+    {% if page %}
+      <dt>{% translate "Page" %}</dt>
+      <dd><a href="{% url 'wagtailadmin_pages:edit' page.pk %}">{{ page.title }}</a> ({{ page.locale.get_display_name }})</dd>
+    {% endif %}
+    <dt>{% translate "Current text" %}</dt>
+    <dd>{% if current_text %}{{ current_text }}{% else %}<em>{% translate "Empty" %}</em>{% endif %}</dd>
+    <dt>{% translate "Proposed text" %}</dt>
+    <dd><strong>{{ suggestion.proposed_text }}</strong> ({{ suggestion.proposed_text|length }} {% translate "characters" %})</dd>
+    <dt>{% translate "Status" %}</dt>
+    <dd>{{ suggestion.get_status_display }}{% if suggestion.reviewed_by %}, {{ suggestion.reviewed_by }} · {{ suggestion.reviewed_at|date:"j F Y H:i" }}{% endif %}</dd>
+    {% if suggestion.review_note %}
+      <dt>{% translate "Review note" %}</dt>
+      <dd>{{ suggestion.review_note }}</dd>
+    {% endif %}
+    <dt>{% translate "Drafted by" %}</dt>
+    <dd><a href="{% url 'providercall:inspect' suggestion.call_id %}">{{ suggestion.call.provider }}{% if suggestion.call.model_name %} ({{ suggestion.call.model_name }}){% endif %}</a></dd>
+  </dl>
+
+  {% if is_pending and can_review %}
+    <p class="help-block help-info">{% translate "Approving saves the text into a new draft of the page. Nothing is published until an editor publishes the page." %}</p>
+    <form action="{{ approve_url }}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="button">{% translate "Approve as draft" %}</button>
+    </form>
+    <form action="{{ reject_url }}" method="post">
+      {% csrf_token %}
+      <label for="review-note">{% translate "Why reject it? (optional)" %}</label>
+      <textarea id="review-note" name="note" rows="2"></textarea>
+      <button type="submit" class="button button-secondary">{% translate "Reject" %}</button>
+    </form>
+  {% elif is_pending %}
+    <p class="help-block help-warning">{% translate "You need permission to edit this page to review this suggestion." %}</p>
+  {% endif %}
+{% endblock %}

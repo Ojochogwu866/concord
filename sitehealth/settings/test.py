@@ -1,3 +1,5 @@
+import os
+
 import dj_database_url
 
 from sitehealth.settings.base import *
@@ -16,3 +18,7 @@ PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 # Serve static files from finders so tests do not depend on collectstatic.
 WHITENOISE_AUTOREFRESH = True
+
+SUGGESTIONS_PROVIDER = os.environ.get(
+    "SUGGESTIONS_PROVIDER", "suggestions.providers.offline.OfflineProvider"
+)

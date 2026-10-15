@@ -39,13 +39,15 @@ Built:
 - A link checker (`check_links`) that reports a link only after three failed checks in a row, with timeouts, retries, a per-host rate limit, a bounded worker pool and protection against requests to private addresses
 - Automatic redirects when a page's slug changes
 - An inspection log on the home page and a read-only findings report in the Wagtail admin
+- The groundwork for AI-drafted fixes: a provider interface, a review screen where editors approve or reject each suggestion, a wagtail-localize translator hook, and a log of every model call
 - Two safe migrations for `reading_time`: add the column, then backfill it
 - Playwright and axe-core checks for WCAG 2.2 AA at 360, 768 and 1280 px, in both languages
 - A multi-stage Docker image and GitHub Actions for CI, deployment and a nightly accessibility run
 
 Not built yet:
 
-- AI-drafted fixes that editors approve, starting with translation drafts
+- A real model behind the suggestions. The interface, review flow and translator hook are built and tested with an offline placeholder; connecting Claude needs API credit.
+- Alt-text suggestions, which need a vision model
 - A dashboard panel on the admin home page, and a nightly email digest
 
 ## How it works
@@ -74,6 +76,18 @@ A check is a small function that registers itself and returns findings. Page che
 | `redirect.loop` | Error | Redirects that never reach a page |
 | `redirect.broken_target` | Error | A redirect with no target, to an unpublished page, or to a path that errors |
 
+## Suggestions
+
+Concord can draft fixes for some findings, but a person always decides. `suggest_fixes` asks the configured provider for a shorter SEO title or a missing meta description, checks the answer against the same length limits the audit uses, and stores it as a pending suggestion. In the admin, under **Suggestions**, an editor compares the current and proposed text and approves or rejects it. Approving writes the text into a new draft of the page, built on its latest draft so unpublished work is kept, and nothing is published until an editor publishes the page. Reviewing needs permission to edit that page.
+
+For missing translations, the same provider sits behind wagtail-localize's machine-translation button, so drafts appear in the normal translation editor for a translator to review.
+
+Every model call is logged with its prompt, response, model and requester under **Suggestions → Model calls**. Suggestions are off unless `SUGGESTIONS_PROVIDER` is set, so nothing is called or billed by accident. Development and tests use an offline provider that returns clearly marked placeholder text.
+
+```bash
+docker compose exec web python manage.py suggest_fixes --limit 10
+```
+
 ## Migrations and rollback
 
 Every migration is reversible, and CI runs them forward, backward and forward again on PostgreSQL with seeded content.
@@ -86,6 +100,7 @@ Every migration is reversible, and CI runs them forward, backward and forward ag
 | briefs | `0004_brief_reading_time` | Add `reading_time` | Nullable column, so no table rewrite and no backfill at add time | `migrate briefs 0003` removes the column |
 | briefs | `0005_backfill_reading_time` | Compute reading time from word count | Idempotent; carries a frozen copy of the formula | Reverse is a no-op; the data is harmless left in place |
 | audits | `0001`–`0004` | Runs, findings, constraint fix, labels, link checks | New tables and a partial unique index | `migrate audits zero` |
+| suggestions | `0001_initial` | Suggestions and model calls | New tables only | `migrate suggestions zero` |
 
 A rename or type change should follow expand and contract: add the new column, backfill it, move the code over, and drop the old column in a later release.
 
@@ -124,6 +139,7 @@ The production image serves the site with gunicorn and serves static files with 
 | `WAGTAILADMIN_BASE_URL` | `https://health.example.com` (also sets the Wagtail site's address) |
 | `R2_BUCKET_NAME`, `R2_BUCKET_URL`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Cloudflare R2 bucket for uploaded images |
 | `R2_PUBLIC_URL` | Optional public domain for the bucket; without it, image URLs are signed |
+| `SUGGESTIONS_PROVIDER` | Optional dotted path to a suggestion provider; leave unset to keep suggestions off |
 
 On the host (I use Coolify), build from the Dockerfile and expose port 8000. Then:
 
