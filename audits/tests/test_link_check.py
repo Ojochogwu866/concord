@@ -15,6 +15,8 @@ from briefs.models import BriefPage
 from briefs.tests.fixtures import BriefFactory
 
 DEAD_LINK = "https://public.example/gone"
+# Requests connect to the address that passed the safety check.
+PINNED_DEAD_LINK = "https://93.184.216.34/gone"
 
 
 @pytest.fixture(autouse=True)
@@ -70,7 +72,7 @@ def test_reports_a_dead_link_only_after_three_failures(
     make_brief: BriefFactory, network: respx.MockRouter
 ) -> None:
     brief = make_brief(body=body_linking_to(DEAD_LINK))
-    network.head(DEAD_LINK).respond(404)
+    network.head(PINNED_DEAD_LINK).respond(404)
 
     run_link_check()
     run_link_check()
@@ -89,7 +91,7 @@ def test_a_success_resets_the_failure_count(
     make_brief: BriefFactory, network: respx.MockRouter
 ) -> None:
     make_brief(body=body_linking_to(DEAD_LINK))
-    route = network.head(DEAD_LINK)
+    route = network.head(PINNED_DEAD_LINK)
     route.respond(404)
     run_link_check()
     run_link_check()
@@ -105,7 +107,7 @@ def test_bot_protection_neither_counts_nor_resets(
     make_brief: BriefFactory, network: respx.MockRouter
 ) -> None:
     make_brief(body=body_linking_to(DEAD_LINK))
-    route = network.head(DEAD_LINK)
+    route = network.head(PINNED_DEAD_LINK)
     route.respond(404)
     run_link_check()
 
@@ -131,7 +133,7 @@ def test_removing_a_link_clears_its_history_and_finding(
     make_brief: BriefFactory, network: respx.MockRouter
 ) -> None:
     brief = make_brief(body=body_linking_to(DEAD_LINK))
-    network.head(DEAD_LINK).respond(404)
+    network.head(PINNED_DEAD_LINK).respond(404)
     for _ in range(3):
         run_link_check()
 
@@ -147,7 +149,7 @@ def test_page_audits_and_link_checks_leave_each_others_findings_alone(
     make_brief: BriefFactory, network: respx.MockRouter
 ) -> None:
     make_brief(body=body_linking_to(DEAD_LINK))
-    network.head(DEAD_LINK).respond(404)
+    network.head(PINNED_DEAD_LINK).respond(404)
     run_page_audit()
     for _ in range(3):
         run_link_check()
@@ -167,7 +169,7 @@ def test_command_reports_links_checked(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     make_brief(body=body_linking_to(DEAD_LINK))
-    network.head(DEAD_LINK).respond(404)
+    network.head(PINNED_DEAD_LINK).respond(404)
 
     call_command("check_links")
 

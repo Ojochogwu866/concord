@@ -44,7 +44,7 @@ class LinkResult:
         return f"HTTP {self.status_code}" if self.status_code else self.error
 
 
-def assert_public_url(url: str) -> None:
+def resolve_public_address(url: str) -> str:
     parts = urlsplit(url)
     if parts.scheme not in ALLOWED_SCHEMES or not parts.hostname:
         raise UnsafeURLError(f"Only http and https links can be checked: {url}")
@@ -53,9 +53,34 @@ def assert_public_url(url: str) -> None:
     except socket.gaierror as error:
         raise UnsafeURLError(f"Could not resolve {parts.hostname}.") from error
     for *_, sockaddr in addresses:
-        address = ipaddress.ip_address(sockaddr[0])
-        if not address.is_global:
+        if not ipaddress.ip_address(sockaddr[0]).is_global:
             raise UnsafeURLError(f"{parts.hostname} points to a private address.")
+    # Prefer IPv4: a pinned request cannot fall back to another address the way an
+    # unpinned one can, and IPv6 is often unreachable even when the site is up.
+    families = [family for family, *_ in addresses]
+    preferred = families.index(socket.AF_INET) if socket.AF_INET in families else 0
+    return str(addresses[preferred][4][0])
+
+
+@dataclass(frozen=True)
+class PinnedRequest:
+    url: str
+    headers: dict[str, str]
+    extensions: dict[str, str]
+
+
+def pin_to_address(url: str, address: str) -> PinnedRequest:
+    # Connecting to the address that passed the check, instead of letting the HTTP
+    # client resolve the name again, closes the DNS-rebinding gap.
+    parts = urlsplit(url)
+    port = f":{parts.port}" if parts.port else ""
+    host = f"[{address}]" if ":" in address else address
+    hostname = parts.hostname or ""
+    return PinnedRequest(
+        url=parts._replace(netloc=f"{host}{port}").geturl(),
+        headers={"Host": f"{hostname}{port}"},
+        extensions={"sni_hostname": hostname} if parts.scheme == "https" else {},
+    )
 
 
 class HostRateLimiter:
@@ -117,18 +142,22 @@ class ExternalLinkChecker:
     def _follow(self, url: str) -> LinkResult:
         current = url
         for _ in range(self._limits.max_redirects + 1):
-            assert_public_url(current)
+            pinned = pin_to_address(current, resolve_public_address(current))
             self._rate_limiter.wait(urlsplit(current).hostname or "")
-            status, location = self._request(current)
+            status, location = self._request(pinned)
             if location is None:
                 return LinkResult(url=url, status_code=status)
             current = urljoin(current, location)
         return LinkResult(url=url, status_code=None, error="Too many redirects.")
 
-    def _request(self, url: str) -> tuple[int, str | None]:
-        response = self._client.head(url)
+    def _request(self, pinned: PinnedRequest) -> tuple[int, str | None]:
+        response = self._client.head(
+            pinned.url, headers=pinned.headers, extensions=pinned.extensions
+        )
         if response.status_code in GET_FALLBACK_STATUSES:
-            with self._client.stream("GET", url) as streamed:
+            with self._client.stream(
+                "GET", pinned.url, headers=pinned.headers, extensions=pinned.extensions
+            ) as streamed:
                 received = 0
                 for chunk in streamed.iter_bytes():
                     received += len(chunk)

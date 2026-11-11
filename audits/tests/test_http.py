@@ -10,7 +10,8 @@ from audits.http import (
     HostRateLimiter,
     LinkCheckerLimits,
     UnsafeURLError,
-    assert_public_url,
+    pin_to_address,
+    resolve_public_address,
 )
 
 ADDRESSES = {
@@ -74,11 +75,11 @@ def checker(
 )
 def test_blocks_private_unresolvable_and_non_http_urls(url: str) -> None:
     with pytest.raises(UnsafeURLError):
-        assert_public_url(url)
+        resolve_public_address(url)
 
 
-def test_allows_public_urls() -> None:
-    assert_public_url("https://public.example/page")
+def test_returns_the_address_it_approved() -> None:
+    assert resolve_public_address("https://public.example/page") == "93.184.216.34"
 
 
 @pytest.mark.parametrize(
@@ -92,7 +93,7 @@ def test_classifies_head_responses(
     is_ok: bool,
     is_broken: bool,
 ) -> None:
-    network.head("https://public.example/page").respond(status)
+    network.head("https://93.184.216.34/page").respond(status)
 
     result = checker.check("https://public.example/page")
 
@@ -109,7 +110,7 @@ def test_bot_protection_is_inconclusive(
     checker: ExternalLinkChecker,
     status: int,
 ) -> None:
-    network.head("https://public.example/page").respond(status)
+    network.head("https://93.184.216.34/page").respond(status)
 
     result = checker.check("https://public.example/page")
 
@@ -121,8 +122,8 @@ def test_falls_back_to_get_when_head_is_not_allowed(
     network: respx.MockRouter,
     checker: ExternalLinkChecker,
 ) -> None:
-    network.head("https://public.example/page").respond(405)
-    get = network.get("https://public.example/page").respond(200, content=b"x" * 4096)
+    network.head("https://93.184.216.34/page").respond(405)
+    get = network.get("https://93.184.216.34/page").respond(200, content=b"x" * 4096)
 
     result = checker.check("https://public.example/page")
 
@@ -133,10 +134,8 @@ def test_falls_back_to_get_when_head_is_not_allowed(
 def test_follows_redirects_to_the_final_status(
     network: respx.MockRouter, checker: ExternalLinkChecker
 ) -> None:
-    network.head("https://public.example/old").respond(
-        301, headers={"Location": "/new"}
-    )
-    network.head("https://public.example/new").respond(200)
+    network.head("https://93.184.216.34/old").respond(301, headers={"Location": "/new"})
+    network.head("https://93.184.216.34/new").respond(200)
 
     assert checker.check("https://public.example/old").status_code == 200
 
@@ -144,7 +143,7 @@ def test_follows_redirects_to_the_final_status(
 def test_refuses_redirects_to_private_addresses(
     network: respx.MockRouter, checker: ExternalLinkChecker
 ) -> None:
-    network.head("https://public.example/hop").respond(
+    network.head("https://93.184.216.34/hop").respond(
         302, headers={"Location": "https://metadata.example/latest/"}
     )
 
@@ -157,7 +156,7 @@ def test_refuses_redirects_to_private_addresses(
 def test_stops_after_too_many_redirects(
     network: respx.MockRouter, checker: ExternalLinkChecker
 ) -> None:
-    network.head("https://public.example/loop").respond(
+    network.head("https://93.184.216.34/loop").respond(
         302, headers={"Location": "/loop"}
     )
 
@@ -171,7 +170,7 @@ def test_retries_a_timeout_once_with_backoff(
     checker: ExternalLinkChecker,
     sleeps: list[float],
 ) -> None:
-    route = network.head("https://public.example/slow").mock(
+    route = network.head("https://93.184.216.34/slow").mock(
         side_effect=httpx.ReadTimeout("slow")
     )
 
@@ -185,7 +184,7 @@ def test_retries_a_timeout_once_with_backoff(
 def test_recovers_when_the_retry_succeeds(
     network: respx.MockRouter, checker: ExternalLinkChecker
 ) -> None:
-    network.head("https://public.example/flaky").mock(
+    network.head("https://93.184.216.34/flaky").mock(
         side_effect=[httpx.ConnectError("refused"), httpx.Response(200)]
     )
 
@@ -202,3 +201,75 @@ def test_rate_limiter_spaces_requests_to_the_same_host() -> None:
     limiter.wait("other.example")
 
     assert slept == [1.0]
+
+
+def test_pinned_requests_keep_the_real_host_for_headers_and_tls(
+    network: respx.MockRouter, checker: ExternalLinkChecker
+) -> None:
+    route = network.head("https://93.184.216.34/page").respond(200)
+
+    checker.check("https://public.example/page")
+
+    request = route.calls.last.request
+    assert request.headers["host"] == "public.example"
+    assert request.extensions["sni_hostname"] == "public.example"
+
+
+def test_pins_ipv6_addresses_in_brackets() -> None:
+    pinned = pin_to_address("http://public.example:8080/page?q=1", "2606:2800::1")
+
+    assert pinned.url == "http://[2606:2800::1]:8080/page?q=1"
+    assert pinned.headers == {"Host": "public.example:8080"}
+    assert pinned.extensions == {}
+
+
+def test_a_dns_answer_that_changes_cannot_redirect_the_request(
+    network: respx.MockRouter,
+    checker: ExternalLinkChecker,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    answers = iter(["93.184.216.34", "10.0.0.5"])
+    lookups: list[str] = []
+
+    def rebinding_dns(
+        host: str, port: int | None, *args: object
+    ) -> list[tuple[object, ...]]:
+        lookups.append(host)
+        address = next(answers)
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (address, port or 443))]
+
+    monkeypatch.setattr("audits.http.socket.getaddrinfo", rebinding_dns)
+    route = network.head("https://93.184.216.34/page").respond(200)
+
+    assert checker.check("https://rebinding.example/page").is_ok
+    assert lookups == ["rebinding.example"]
+    assert route.called
+
+
+def test_prefers_ipv4_when_a_host_has_both(monkeypatch: pytest.MonkeyPatch) -> None:
+    def dual_stack(
+        host: str, port: int | None, *args: object
+    ) -> list[tuple[object, ...]]:
+        return [
+            (socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("2606:2800::1", 443, 0, 0)),
+            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443)),
+        ]
+
+    monkeypatch.setattr("audits.http.socket.getaddrinfo", dual_stack)
+
+    assert resolve_public_address("https://dual.example/") == "93.184.216.34"
+
+
+def test_rejects_a_host_if_any_address_is_private(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def mixed(host: str, port: int | None, *args: object) -> list[tuple[object, ...]]:
+        return [
+            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443)),
+            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("10.0.0.5", 443)),
+        ]
+
+    monkeypatch.setattr("audits.http.socket.getaddrinfo", mixed)
+
+    with pytest.raises(UnsafeURLError, match="private address"):
+        resolve_public_address("https://mixed.example/")
