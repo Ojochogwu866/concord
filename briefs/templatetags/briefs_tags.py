@@ -9,6 +9,7 @@ from django.utils.translation import get_language
 from wagtail.models import Page, Site
 
 from briefs.models import BriefIndexPage
+from sitehealth.request_cache import cached_for_request
 
 register = template.Library()
 
@@ -52,10 +53,14 @@ def brief_index_page(context: Context) -> BriefIndexPage | None:
     site = _site_for(context)
     if site is None:
         return None
-    brief_index: BriefIndexPage | None = (
-        BriefIndexPage.objects.child_of(site.root_page).live().first()
-    )
-    return brief_index.localized if brief_index else None
+
+    def find() -> BriefIndexPage | None:
+        brief_index: BriefIndexPage | None = (
+            BriefIndexPage.objects.child_of(site.root_page).live().first()
+        )
+        return brief_index.localized if brief_index else None
+
+    return cached_for_request(context.get("request"), "brief_index_page", find)
 
 
 @register.simple_tag(takes_context=True)
@@ -63,8 +68,12 @@ def localized_home_url(context: Context) -> str:
     site = _site_for(context)
     if site is None:
         return "/"
-    url: str = site.root_page.localized.url
-    return url
+
+    def find() -> str:
+        url: str = site.root_page.localized.url
+        return url
+
+    return cached_for_request(context.get("request"), "localized_home_url", find)
 
 
 @register.simple_tag(takes_context=True)

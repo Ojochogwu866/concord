@@ -45,16 +45,18 @@ class InspectionStatus:
     open_count: int
 
 
-def inspection_status() -> InspectionStatus:
-    latest_run = AuditRun.objects.filter(status__in=COMPLETED_STATUSES).first()
-    open_count = (
-        Finding.objects.filter(resolved_at__isnull=True).count() if latest_run else 0
-    )
-    return InspectionStatus(latest_run=latest_run, open_count=open_count)
+def latest_completed_run() -> AuditRun | None:
+    run: AuditRun | None = AuditRun.objects.filter(
+        status__in=COMPLETED_STATUSES
+    ).first()
+    return run
 
 
-def inspection_log() -> InspectionLog:
-    latest_run = AuditRun.objects.filter(status__in=COMPLETED_STATUSES).first()
+def open_finding_count() -> int:
+    return Finding.objects.filter(resolved_at__isnull=True).count()
+
+
+def inspection_log(latest_run: AuditRun | None, open_count: int) -> InspectionLog:
     newest_attempt = AuditRun.objects.exclude(status=AuditRun.Status.RUNNING).first()
     failed_run = (
         newest_attempt
@@ -66,7 +68,7 @@ def inspection_log() -> InspectionLog:
         latest_run=latest_run,
         failed_run=failed_run,
         entries=_log_entries(open_findings) if latest_run else [],
-        open_count=open_findings.count() if latest_run else 0,
+        open_count=open_count,
     )
 
 
