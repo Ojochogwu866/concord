@@ -4,6 +4,7 @@ from sitehealth.settings.base import *
 from sitehealth.settings.environment import (
     get_required,
     get_required_list,
+    r2_media_host,
     r2_storage,
 )
 
@@ -27,6 +28,9 @@ DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 media_storage = r2_storage()
 if media_storage is not None:
     STORAGES["default"] = media_storage
+    media_host = r2_media_host(media_storage)
+    SECURE_CSP["img-src"] = [*SECURE_CSP["img-src"], media_host]
+    ADMIN_CSP["img-src"] = [*ADMIN_CSP["img-src"], media_host]
 
 STORAGES["staticfiles"]["BACKEND"] = (
     "whitenoise.storage.CompressedManifestStaticFilesStorage"

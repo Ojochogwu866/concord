@@ -49,3 +49,11 @@ def r2_storage() -> dict[str, object] | None:
             "querystring_auth": not public_host,
         },
     }
+
+
+def r2_media_host(storage: dict[str, object]) -> str:
+    options = storage["OPTIONS"]
+    if not isinstance(options, dict):
+        raise ImproperlyConfigured("R2 storage options are missing.")
+    host = options["custom_domain"] or urlsplit(str(options["endpoint_url"])).netloc
+    return f"https://{host}"

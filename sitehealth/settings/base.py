@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from django.utils.csp import CSP
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
 
@@ -33,6 +35,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -56,6 +59,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
+                "django.template.context_processors.csp",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "sitehealth.context_processors.site_credits",
@@ -101,6 +105,31 @@ STORAGES: dict[str, dict[str, object]] = {
 
 # Wagtail's live preview renders pages in a same-origin iframe.
 X_FRAME_OPTIONS = "SAMEORIGIN"
+
+# Inline style attributes carry animation order and view-transition names; inline
+# scripts are allowed only with the per-request nonce.
+SECURE_CSP: dict[str, list[str]] = {
+    "default-src": [CSP.SELF],
+    "script-src": [CSP.SELF, CSP.NONCE],
+    "style-src": [CSP.SELF, CSP.UNSAFE_INLINE],
+    "img-src": [CSP.SELF, "data:"],
+    "font-src": [CSP.SELF],
+    "connect-src": [CSP.SELF],
+    "object-src": [CSP.NONE],
+    "base-uri": [CSP.SELF],
+    "form-action": [CSP.SELF],
+    "frame-ancestors": [CSP.SELF],
+}
+# Wagtail's editor panels and date widgets ship inline scripts without nonces, so
+# the admin allows inline scripts while still refusing anything from other origins.
+ADMIN_CSP: dict[str, list[str]] = {
+    **SECURE_CSP,
+    "script-src": [CSP.SELF, CSP.UNSAFE_INLINE],
+    "img-src": [CSP.SELF, "data:", "blob:"],
+}
+WAGTAIL_GRAVATAR_PROVIDER_URL = None
+# Keeps the admin from contacting releases.wagtail.org, which the CSP also blocks.
+WAGTAIL_ENABLE_UPDATE_CHECK = False
 
 # Wagtail's page editor can exceed Django's default limit of 1000 fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
