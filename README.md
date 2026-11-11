@@ -43,7 +43,7 @@ docker compose exec web python manage.py check_links
 
 ## How it works
 
-The project has three apps with clear boundaries: `briefs` holds the content, `audits` finds problems, and `suggestions` drafts fixes for people to review. Removing `suggestions` leaves the rest untouched.
+The project has three apps. `briefs` holds the content, `audits` finds problems, and `suggestions` drafts fixes for people to review. Dependencies run one way: `suggestions` builds on `audits` findings and reuses a text helper from `briefs`, and the home page shows the inspection log through a template tag from `audits`. Nothing in `briefs` or `audits` imports `suggestions`, so removing it means deleting the app and its three settings.
 
 A check is a small function that registers itself and returns findings, so adding one never touches the runner. Page checks receive a rendered page with its HTML parsed once and shared by every check; site checks, like the redirect check, look at the whole site. The runner renders pages through Django's full request stack, so it inspects exactly what visitors get, then saves everything in bulk.
 
@@ -71,9 +71,10 @@ A check is a small function that registers itself and returns findings, so addin
 
 - **A finding is a problem, not an event.** Each finding stays open while the problem keeps appearing and resolves on the first run where it does not. A partial unique index stops the same open problem being recorded twice, and each kind of run only resolves the findings it raised, so a page audit can never close a broken link.
 - **A page that fails to render is not a clean page.** If one page errors, the run records it and moves on, and that page's findings stay open instead of being marked fixed.
-- **Three strikes for links.** A 404, 410, 5xx or network error counts as a failure; 401, 403 and 429 usually mean bot protection or rate limiting, so they count as inconclusive. The checker times out after 10 seconds, retries once, sends at most one request per second to any host from a bounded worker pool, follows at most five redirects, caps how much it downloads, and refuses requests to private, loopback and link-local addresses at every hop.
+- **Three strikes for links.** A 404, 410, 5xx or network error counts as a failure; 401, 403 and 429 usually mean bot protection or rate limiting, so they count as inconclusive. The checker times out after 10 seconds, retries once, sends at most one request per second to any host from a bounded worker pool, follows at most five redirects, and caps how much it downloads. At every hop it refuses private, loopback and link-local addresses, then connects to the exact address it checked, so a DNS answer that changes in between cannot redirect the request.
 - **People approve, the model drafts.** Suggestions are checked against the same length limits the audit uses, approving writes a draft built on the page's latest revision so unpublished edits survive, and every model call is logged with its prompt, response and requester. Suggestions stay off unless a provider is configured, so nothing is called or billed by accident.
 - **Translations publish immediately.** wagtail-localize defers publishing to the end of the transaction, by which time the queued revision is stale and resets the parent page's child count. I publish each seeded translation straight away so French pages are always routable.
+- **A strict Content Security Policy on the public site.** Scripts load only from this origin, and the one inline script carries a per-request nonce. Wagtail's editor ships inline scripts without nonces, so the admin gets its own policy that allows them but still refuses other origins.
 - **Schema changes expand, then contract.** `reading_time` arrives as a nullable column, then a separate, idempotent migration backfills it, so it is safe on a live table and both steps roll back cleanly.
 
 ## Suggestions
