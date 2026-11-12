@@ -1,15 +1,28 @@
 {% load i18n static wagtailcore_tags wagtailuserbar briefs_tags %}<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
 {% language_links as language_link_list %}
+{% wagtail_site as current_site %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{% firstof page.seo_title page.title %}{% endblock %}</title>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+  <meta property="og:site_name" content="{% firstof current_site.site_name 'Concord' %}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% firstof page.seo_title page.title current_site.site_name 'Concord' %}">
+  <meta name="twitter:card" content="summary">
   {% with description=page|meta_description %}
-    {% if description %}<meta name="description" content="{{ description }}">{% endif %}
+    {% if description %}
+      <meta name="description" content="{{ description }}">
+      <meta property="og:description" content="{{ description }}">
+    {% endif %}
   {% endwith %}
-  {% if page %}<link rel="canonical" href="{% fullpageurl page %}">{% endif %}
+  {% if page %}
+    <link rel="canonical" href="{% fullpageurl page %}">
+    <meta property="og:url" content="{% fullpageurl page %}">
+  {% endif %}
   {% if request.in_preview_panel %}
     <base target="_blank">
   {% endif %}
